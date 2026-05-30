@@ -24,7 +24,7 @@ import { readdir, writeFile } from "fs/promises";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 
-import { BUILD_TIMESTAMP, commonOpts, exists, globPlugins, IS_DEV, IS_REPORTER, IS_COMPANION_TEST, IS_STANDALONE, IS_UPDATER_DISABLED, resolvePluginName, VERSION, commonRendererPlugins, watch, buildOrWatchAll, stringifyValues, IS_ANTI_CRASH_TEST } from "./common.mjs";
+import { BUILD_TIMESTAMP, commonOpts, exists, globPlugins, IS_DEV, IS_REPORTER, IS_COMPANION_TEST, IS_STANDALONE, IS_UPDATER_DISABLED, resolvePluginName, VERSION, watch, buildOrWatchAll, stringifyValues, IS_ANTI_CRASH_TEST } from "./common.mjs";
 
 const defines = stringifyValues({
     IS_STANDALONE,
@@ -171,75 +171,14 @@ const buildConfigs = ([
             IS_VESKTOP: "false",
             IS_EQUIBOP: "false"
         }
-    },
-
-    // Vencord Desktop main & renderer & preload
-    {
-        ...nodeCommonOpts,
-        entryPoints: [join(dirname(fileURLToPath(import.meta.url)), "../../src/main/index.ts")],
-        outfile: "dist/equibop/main.js",
-        footer: { js: "//# sourceURL=file:///VencordDesktopMain\n" + sourceMapFooter("main") },
-        sourcemap,
-        plugins: [
-            ...nodeCommonOpts.plugins,
-            globNativesPlugin
-        ],
-        define: {
-            ...defines,
-            IS_DISCORD_DESKTOP: "false",
-            IS_VESKTOP: "false",
-            IS_EQUIBOP: "true"
-        }
-    },
-    {
-        ...commonOpts,
-        entryPoints: [join(dirname(fileURLToPath(import.meta.url)), "../../src/Vencord.ts")],
-        outfile: "dist/equibop/renderer.js",
-        format: "iife",
-        target: ["esnext"],
-        footer: { js: "//# sourceURL=file:///VencordDesktopRenderer\n" + sourceMapFooter("renderer") },
-        globalName: "Vencord",
-        sourcemap,
-        plugins: [
-            globPlugins("equibop"),
-            ...commonRendererPlugins
-        ],
-        define: {
-            ...defines,
-            IS_DISCORD_DESKTOP: "false",
-            IS_VESKTOP: "false",
-            IS_EQUIBOP: "true"
-        }
-    },
-    {
-        ...nodeCommonOpts,
-        entryPoints: [join(dirname(fileURLToPath(import.meta.url)), "../../src/preload.ts")],
-        outfile: "dist/equibop/preload.js",
-        footer: { js: "//# sourceURL=file:///VencordPreload\n" + sourceMapFooter("preload") },
-        sourcemap,
-        define: {
-            ...defines,
-            IS_DISCORD_DESKTOP: "false",
-            IS_VESKTOP: "false",
-            IS_EQUIBOP: "true"
-        }
     }
 ]);
 
 await buildOrWatchAll(buildConfigs);
 
-await Promise.all([
-    writeFile("dist/desktop/package.json", JSON.stringify({
-        name: "mallcord",
-        main: "patcher.js"
-    })),
-    writeFile("dist/equibop/package.json", JSON.stringify({
-        name: "mallcord",
-        main: "main.js"
-    }))
-]);
+await writeFile("dist/desktop/package.json", JSON.stringify({
+    name: "mallcord",
+    main: "patcher.js"
+}));
 
-await Promise.all([
-    createPackage("dist/desktop", "dist/desktop.asar"),
-    createPackage("dist/equibop", "dist/equibop.asar"),
-]);
+await createPackage("dist/desktop", "dist/desktop.asar");
