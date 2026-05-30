@@ -1,0 +1,44 @@
+name: Release
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: release
+    cancel-in-progress: true
+
+jobs:
+    release:
+        name: Build and publish desktop.asar
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - run: pnpm buildStandalone
+
+            # The in-app updater looks at the latest release, reads the commit
+            # hash off the end of its name, and grabs the desktop.asar asset.
+            - name: Publish release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: latest
+                  name: MallCord ${{ github.sha }}
+                  body: Automatic build of ${{ github.sha }}.
+                  files: dist/desktop.asar
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
