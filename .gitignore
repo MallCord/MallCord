@@ -38,3 +38,5 @@ ExtensionCache/
 
 # built installer
 mallcord-setup.exe
+installer/sea-prep.blob
+installer/sea-config.json

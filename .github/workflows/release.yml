@@ -16,7 +16,9 @@ concurrency:
 jobs:
     release:
         name: Build and publish desktop.asar
-        runs-on: ubuntu-latest
+        # Windows runner so the Single Executable App build produces a real
+        # Windows mallcord-setup.exe (SEA copies the host Node binary).
+        runs-on: windows-latest
         steps:
             - uses: actions/checkout@v4
 
@@ -32,7 +34,7 @@ jobs:
             - run: pnpm buildStandalone
 
             - name: Build the installer exe
-              run: npx --yes @yao-pkg/pkg installer/mallcord-setup.cjs -t node18-win-x64 -o mallcord-setup.exe
+              run: pnpm package:installer
 
             # The in-app updater looks at the latest release, reads the commit
             # hash off the end of its name, and grabs the desktop.asar asset.
