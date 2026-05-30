@@ -15,7 +15,7 @@ import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, EQUIBOT_USER_ID, EquicordDevs, SUPPORT_CHANNEL_ID, VC_SUPPORT_CATEGORY_ID, VENBOT_USER_ID } from "@utils/constants";
+import { Devs, EQUIBOT_USER_ID, MallCordDevs, SUPPORT_CHANNEL_ID, VC_SUPPORT_CATEGORY_ID, VENBOT_USER_ID } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { classes } from "@utils/misc";
@@ -418,7 +418,7 @@ export default definePlugin({
     name: "MessageLogger",
     description: "Temporarily logs deleted and edited messages.",
     tags: ["Chat", "Utility"],
-    authors: [Devs.rushii, Devs.Ven, Devs.AutumnVN, Devs.Nickyux, Devs.Kyuuhachi, EquicordDevs.justjxke],
+    authors: [Devs.rushii, Devs.Ven, Devs.AutumnVN, Devs.Nickyux, Devs.Kyuuhachi, MallCordDevs.justjxke],
     dependencies: ["MessageUpdaterAPI"],
     isModified: true,
     settings,

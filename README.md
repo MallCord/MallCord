@@ -1,40 +1,23 @@
-# [<img src="./browser/icon.png" width="40" align="left" alt="Equicord">](https://github.com/Equicord/Equicord) Equicord
+# [<img src="https://iili.io/C3TD6bt.md.png" width="40" align="left" alt="MallCord">](https://github.com/unfamiliardev/MallCord) MallCord
 
-[![Equibop](https://img.shields.io/badge/Equibop-grey?style=flat)](https://github.com/Equicord/Equibop)
-[![Tests](https://github.com/Equicord/Equicord/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Equicord/Equicord/actions/workflows/test.yml)
-[![Discord](https://img.shields.io/discord/1173279886065029291.svg?color=768AD4&label=Discord&logo=discord&logoColor=white)](https://equicord.org/discord)
+[![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
+[![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
 
-Equicord is a fork of [Vencord](https://github.com/Vendicated/Vencord), with over 300+ plugins.
+> aesthetic vibes for your client.
 
-You can join our [Discord server](https://equicord.org/discord) for commits, changes, chatting, or even support.
+**MallCord** is a vaporwave-inspired Discord client mod by **matthew (unfamiliardev)**. It is a rebrand and reskin of
+[Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
+[Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
-### Included Plugins
+The signature feature is a toggleable **Vaporwave** theme you can switch on right from the MallCord settings tab — neon
+pink/cyan/purple, glow accents, and a retro grid, applied across the client.
 
-Our included plugins can be found [here](https://equicord.org/plugins).
+> [!NOTE]
+> MallCord is brand new (v0.1b). There is no prebuilt installer yet — for now it builds from source (see below).
+> Prebuilt releases will land on the [Releases page](https://github.com/unfamiliardev/MallCord/releases) as the
+> project matures.
 
-## Installing / Uninstalling
-
-Windows
-
-- [GUI](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.exe)
-- [CLI](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli.exe)
-
-MacOS
-
-- [X64 GUI](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-x64.zip)
-- [ARM64 GUI](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-arm64.zip)
-
-Linux
-
-- [GUI](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11)
-- [CLI](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-Linux)
-- [AUR](https://aur.archlinux.org/packages?O=0&K=equicord)
-
-```shell
-sh -c "$(curl -sS https://raw.githubusercontent.com/Equicord/Equicord/refs/heads/main/misc/install.sh)"
-```
-
-## Installing Equicord Devbuild
+## Building MallCord from source
 
 ### Dependencies
 
@@ -48,13 +31,13 @@ Install `pnpm`:
 npm i -g pnpm
 ```
 
-> :exclamation: **IMPORTANT** Make sure you aren't using an admin/root terminal from here onwards. It **will** mess up your Discord/Equicord instance and you **will** most likely have to reinstall.
+> :exclamation: **IMPORTANT** Make sure you aren't using an admin/root terminal from here onwards. It **will** mess up your Discord/MallCord instance and you **will** most likely have to reinstall.
 
-Clone Equicord:
+Clone MallCord:
 
 ```shell
-git clone https://github.com/Equicord/Equicord
-cd Equicord
+git clone https://github.com/unfamiliardev/MallCord
+cd MallCord
 ```
 
 Install dependencies:
@@ -63,57 +46,56 @@ Install dependencies:
 pnpm install --frozen-lockfile
 ```
 
-Build Equicord:
+Build MallCord:
 
 ```shell
 pnpm build
 ```
 
-Inject Equicord into your desktop client:
+Inject MallCord into your desktop client:
 
 ```shell
 pnpm inject
 ```
 
-Build Equicord for web:
+Build MallCord for web:
 
 ```shell
 pnpm buildWeb
 ```
 
-After building Equicord's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser’s guide for installing custom extensions, if supported.
+After building MallCord's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser's guide for installing custom extensions, if supported.
 
 Note: Firefox extension zip requires Firefox for developers
 
+## Enabling the Vaporwave theme
+
+Open **Discord Settings → MallCord** and toggle **Vaporwave Theme**. No restart required.
+
 ## Credits
 
-Thank you to [Vendicated](https://github.com/Vendicated) for creating [Vencord](https://github.com/Vendicated/Vencord) & [Suncord](https://github.com/verticalsync/Suncord) by [verticalsync](https://github.com/verticalsync) for helping when needed.
+Built on the shoulders of:
 
-## Star History
+- [Vencord](https://github.com/Vendicated/Vencord) by [Vendicated](https://github.com/Vendicated) — the original Discord client mod.
+- [Equicord](https://github.com/Equicord/Equicord) — the enhanced fork MallCord is based on.
 
-<a href="https://star-history.com/#Equicord/Equicord&Timeline">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline" />
-  </picture>
-</a>
+Huge thanks to everyone who contributed to those projects; individual plugin authors are credited in their respective source files.
 
 ## Disclaimer
 
 Discord is trademark of Discord Inc., and solely mentioned for the sake of descriptivity.
 Mentioning it does not imply any affiliation with or endorsement by Discord Inc.
-Vencord is not connected to Equicord and as such, all donation links go to Vendicated's donation link.
+Vencord is not connected to MallCord and as such, all donation links go to Vendicated's donation link.
 
 <details>
-<summary>Using Equicord violates Discord's terms of service</summary>
+<summary>Using MallCord violates Discord's terms of service</summary>
 
-Client modifications are against Discord’s Terms of Service.
+Client modifications are against Discord's Terms of Service.
 
-However, Discord is pretty indifferent about them and there are no known cases of users getting banned for using client mods! So you should generally be fine if you don’t use plugins that implement abusive behaviour. But no worries, all inbuilt plugins are safe to use!
+However, Discord is pretty indifferent about them and there are no known cases of users getting banned for using client mods! So you should generally be fine if you don't use plugins that implement abusive behaviour. But no worries, all inbuilt plugins are safe to use!
 
-Regardless, if your account is essential to you and getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to Equicord), just to be safe.
+Regardless, if your account is essential to you and getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to MallCord), just to be safe.
 
-Additionally, make sure not to post screenshots with Equicord in a server where you might get banned for it.
+Additionally, make sure not to post screenshots with MallCord in a server where you might get banned for it.
 
 </details>

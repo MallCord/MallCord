@@ -1,6 +1,6 @@
 {
-    "name": "@equicord/discord-types",
-    "author": "Equicord & Vencord Contributors",
+    "name": "@mallcord/discord-types",
+    "author": "MallCord & Vencord Contributors",
     "private": false,
     "description": "Typescript definitions for the webpack modules of the Discord Web app",
     "version": "1.0.4",
@@ -9,7 +9,7 @@
     "type": "module",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Equicord/Equicord.git",
+        "url": "git+https://github.com/unfamiliardev/MallCord.git",
         "directory": "packages/discord-types"
     },
     "dependencies": {

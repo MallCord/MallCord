@@ -1,0 +1,118 @@
+/*
+ * MallCord Vaporwave Theme
+ * A e s t h e t i c  neon reskin for Discord, toggleable from the MallCord settings tab.
+ * Copyright (c) 2026 unfamiliardev
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+:root {
+    /* MallCord vaporwave palette */
+    --mc-pink: #ff71ce;
+    --mc-cyan: #01cdfe;
+    --mc-purple: #b967ff;
+    --mc-mint: #05ffa1;
+    --mc-bg-deep: #190033;
+    --mc-bg: #25004d;
+    --mc-bg-soft: #320066;
+    --mc-text: #f7f0ff;
+    --mc-text-dim: #c8a2ff;
+}
+
+.theme-dark,
+.theme-light,
+:root {
+    /* Backgrounds */
+    --background-primary: var(--mc-bg) !important;
+    --background-secondary: var(--mc-bg-deep) !important;
+    --background-secondary-alt: var(--mc-bg-soft) !important;
+    --background-tertiary: #11002b !important;
+    --background-floating: var(--mc-bg-soft) !important;
+    --background-accent: var(--mc-pink) !important;
+    --background-mobile-primary: var(--mc-bg) !important;
+    --background-mobile-secondary: var(--mc-bg-deep) !important;
+    --channeltextarea-background: var(--mc-bg-soft) !important;
+    --bg-overlay-3: var(--mc-bg) !important;
+
+    /* Brand / accent (replaces blurple) */
+    --brand-experiment: var(--mc-pink) !important;
+    --brand-experiment-560: var(--mc-purple) !important;
+    --brand-experiment-600: var(--mc-purple) !important;
+    --brand-500: var(--mc-pink) !important;
+    --button-outline-brand-text: var(--mc-text) !important;
+
+    /* Text */
+    --text-normal: var(--mc-text) !important;
+    --text-muted: var(--mc-text-dim) !important;
+    --header-primary: var(--mc-cyan) !important;
+    --header-secondary: var(--mc-text-dim) !important;
+    --interactive-normal: var(--mc-text-dim) !important;
+    --interactive-hover: var(--mc-cyan) !important;
+    --interactive-active: var(--mc-pink) !important;
+
+    /* Links & accents */
+    --text-link: var(--mc-cyan) !important;
+    --mention-foreground: var(--mc-mint) !important;
+}
+
+/* App backdrop: dusk gradient + retro grid */
+.theme-dark,
+.theme-light {
+    background:
+        linear-gradient(180deg, #2b0a4a 0%, #190033 60%, #0d011f 100%),
+        repeating-linear-gradient(90deg, rgba(1, 205, 254, 0.05) 0 1px, transparent 1px 42px),
+        repeating-linear-gradient(0deg, rgba(255, 113, 206, 0.04) 0 1px, transparent 1px 42px) !important;
+    background-attachment: fixed !important;
+}
+
+/* Make the chrome panels translucent so the gradient shows through */
+[class*="sidebar_"],
+[class*="guilds_"],
+[class*="chatContent_"],
+[class*="container_"][class*="chat_"] {
+    background-color: rgba(37, 0, 77, 0.55) !important;
+    backdrop-filter: blur(2px);
+}
+
+/* Neon glow on your own avatar / server pills */
+[class*="listItem_"] [class*="pill_"] span {
+    background-color: var(--mc-pink) !important;
+    box-shadow: 0 0 8px var(--mc-pink);
+}
+
+/* Glowing primary buttons */
+button[class*="lookFilled_"][class*="colorBrand_"] {
+    background: linear-gradient(90deg, var(--mc-pink), var(--mc-purple)) !important;
+    box-shadow: 0 0 12px rgba(255, 113, 206, 0.45);
+    border: none !important;
+}
+
+/* Selected channel / hover glow */
+[class*="modeSelected_"],
+[class*="modeSelected_"] [class*="name_"] {
+    color: var(--mc-cyan) !important;
+}
+
+[class*="link_"]:hover {
+    text-shadow: 0 0 6px rgba(1, 205, 254, 0.6);
+}
+
+/* Mentions / role pills get a neon outline */
+[class*="mention"] {
+    background-color: rgba(185, 103, 255, 0.25) !important;
+    color: var(--mc-mint) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--mc-pink), var(--mc-cyan)) !important;
+    border-radius: 8px !important;
+}
+
+/* MallCord's own settings tab accents inherit the palette */
+.vc-vencord-tab-title,
+.vc-settings-tab h1 {
+    background: linear-gradient(90deg, var(--mc-pink), var(--mc-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

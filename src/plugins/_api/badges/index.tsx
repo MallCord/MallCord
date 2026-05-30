@@ -24,17 +24,17 @@ import { openContributorModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/discord";
 import { Logger } from "@utils/Logger";
-import { shouldShowContributorBadge, shouldShowEquicordContributorBadge } from "@utils/misc";
+import { shouldShowContributorBadge, shouldShowMallCordContributorBadge } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { ContextMenuApi, Menu, Toasts, UserStore } from "@webpack/common";
 
 import Plugins, { PluginMeta } from "~plugins";
 
-import { EquicordDonorModal, EquicordTranslatorModal, VencordDonorModal } from "./modals";
+import { MallCordDonorModal, MallCordTranslatorModal, VencordDonorModal } from "./modals";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
-const EQUICORD_CONTRIBUTOR_BADGE = "https://equicord.org/assets/favicon.png";
-const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
+const MALLCORD_CONTRIBUTOR_BADGE = "https://mallcord.org/assets/favicon.png";
+const USERPLUGIN_CONTRIBUTOR_BADGE = "https://mallcord.org/assets/icons/misc/userplugin.png";
 
 const ContributorBadge: ProfileBadge = {
     id: "vencord_contributor_badge",
@@ -45,12 +45,12 @@ const ContributorBadge: ProfileBadge = {
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
-const EquicordContributorBadge: ProfileBadge = {
-    id: "equicord_contributor_badge",
-    description: "Equicord Contributor",
-    iconSrc: EQUICORD_CONTRIBUTOR_BADGE,
+const MallCordContributorBadge: ProfileBadge = {
+    id: "mallcord_contributor_badge",
+    description: "MallCord Contributor",
+    iconSrc: MALLCORD_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowEquicordContributorBadge(userId),
+    shouldShow: ({ userId }) => shouldShowMallCordContributorBadge(userId),
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId)),
     props: {
         style: {
@@ -83,7 +83,7 @@ const UserPluginContributorBadge: ProfileBadge = {
 };
 
 let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
-let EquicordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
+let MallCordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 
 async function loadBadges(url: string, noCache = false) {
     const init = {} as RequestInit;
@@ -94,10 +94,10 @@ async function loadBadges(url: string, noCache = false) {
 
 async function loadAllBadges(noCache = false) {
     const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const equicordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
+    const mallcordBadges = await loadBadges("https://badge.mallcord.org/badges.json", noCache);
 
     DonorBadges = vencordBadges;
-    EquicordDonorBadges = equicordBadges;
+    MallCordDonorBadges = mallcordBadges;
 }
 
 let intervalId: any;
@@ -165,8 +165,8 @@ export default definePlugin({
         return DonorBadges;
     },
 
-    get EquicordDonorBadges() {
-        return EquicordDonorBadges;
+    get MallCordDonorBadges() {
+        return MallCordDonorBadges;
     },
 
     toolboxActions: {
@@ -180,7 +180,7 @@ export default definePlugin({
         }
     },
 
-    userProfileBadges: [ContributorBadge, EquicordContributorBadge, UserPluginContributorBadge],
+    userProfileBadges: [ContributorBadge, MallCordContributorBadge, UserPluginContributorBadge],
 
     async start() {
         await loadAllBadges();
@@ -242,9 +242,9 @@ export default definePlugin({
         } satisfies ProfileBadge));
     },
 
-    getEquicordDonorBadges(userId: string) {
-        return EquicordDonorBadges[userId]?.map((badge, idx) => ({
-            id: `equicord_donor_badge_${idx}`,
+    getMallCordDonorBadges(userId: string) {
+        return MallCordDonorBadges[userId]?.map((badge, idx) => ({
+            id: `mallcord_donor_badge_${idx}`,
             iconSrc: badge.badge,
             description: badge.tooltip,
             position: BadgePosition.START,
@@ -258,7 +258,7 @@ export default definePlugin({
                 ContextMenuApi.openContextMenu(event, () => <BadgeContextMenu badge={badge} />);
             },
             onClick() {
-                return badge.tooltip === "Equicord Translator" ? EquicordTranslatorModal() : EquicordDonorModal();
+                return badge.tooltip === "MallCord Translator" ? MallCordTranslatorModal() : MallCordDonorModal();
             },
         } satisfies ProfileBadge));
     }

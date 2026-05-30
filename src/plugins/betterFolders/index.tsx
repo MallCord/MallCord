@@ -19,7 +19,7 @@
 import "./style.css";
 
 import { definePluginSettings } from "@api/Settings";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, MallCordDevs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import type { GuildFolder } from "@vencord/discord-types";
@@ -316,7 +316,7 @@ export default definePlugin({
     name: "BetterFolders",
     description: "Shows server folders on dedicated sidebar and adds folder related improvements",
     tags: ["Organisation", "Servers", "Appearance"],
-    authors: [Devs.juby, Devs.AutumnVN, Devs.Nuckyz, EquicordDevs.justjxke],
+    authors: [Devs.juby, Devs.AutumnVN, Devs.Nuckyz, MallCordDevs.justjxke],
     isModified: true,
     settings,
     start() {

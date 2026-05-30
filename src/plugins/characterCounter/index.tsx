@@ -8,7 +8,7 @@ import "./style.css";
 
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Devs, EquicordDevs } from "@utils/constants";
+import { Devs, MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
@@ -36,7 +36,7 @@ function getCounterColor(percentage: number) {
 export default definePlugin({
     name: "CharacterCounter",
     description: "Adds a character counter to the chat input",
-    authors: [Devs.thororen, EquicordDevs.creations],
+    authors: [Devs.thororen, MallCordDevs.creations],
     tags: ["Utility"],
     settings,
     patches: [

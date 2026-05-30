@@ -169,9 +169,9 @@ export const AudioPlayer = $AudioPlayer;
 export const UserArea = $UserArea;
 
 /**
- * Just used to identify if user is on Equicord as Vencord doesn't have this.
+ * Just used to identify if user is on MallCord as Vencord doesn't have this.
  */
-export const isEquicord = true;
+export const isMallCord = true;
 
 /**
  * An API allowing you to add other collections where discords game collection is.

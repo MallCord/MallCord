@@ -6,9 +6,9 @@
 > Your contribution must be majority human written! Some AI assistance like inline suggestions is acceptable, but "vibecoded" contributions are not welcome.
 > Also **do not** use AI to generate your pull request description, README.md or in communication. Ignoring this rule will lead to a permanent block.
 
-Equicord is a community project and welcomes any kind of contribution from anyone!
+MallCord is a community project and welcomes any kind of contribution from anyone!
 
-We have development documentation for new contributors, which can be found at <https://docs.equicord.org>.
+We have development documentation for new contributors, which can be found at <https://docs.mallcord.org>.
 
 > [!IMPORTANT]
 > All contributions must follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
@@ -46,7 +46,7 @@ Before starting your plugin:
 
 ## Plugin Rules
 
-To keep Equicord stable, secure and maintainable, all plugins must follow these rules:
+To keep MallCord stable, secure and maintainable, all plugins must follow these rules:
 
 1. No simple slash-command plugins (e.g. `/cat`). If applicable, create a [user-installable Discord app](https://discord.com/developers/docs/change-log#userinstallable-apps-preview) instead.
 2. No simple text replacement plugins (the built-in TextReplace plugin already covers this).
@@ -62,13 +62,13 @@ To keep Equicord stable, secure and maintainable, all plugins must follow these 
 
 **Plugins that violate any of these rules will not be accepted.**
 
-## Improving Equicord Itself
+## Improving MallCord Itself
 
-If you want to improve Equicord beyond plugins, such as internal features or performance improvements, you are welcome to open a feature request so it can be discussed.
+If you want to improve MallCord beyond plugins, such as internal features or performance improvements, you are welcome to open a feature request so it can be discussed.
 
 Bug fixes, refactors, and documentation improvements are also highly appreciated!
 
 ## Helping the Community
 
-We have an open support channel in our [Discord community](https://equicord.org/discord).
+We have an open support channel in our [Discord community](https://mallcord.org/discord).
 Helping out users there is always appreciated! The more, the merrier.

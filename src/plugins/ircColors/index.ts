@@ -17,7 +17,7 @@
 */
 
 import { definePluginSettings, Settings } from "@api/Settings";
-import { getCustomColorString } from "@equicordplugins/customUserColors";
+import { getCustomColorString } from "@mallcordplugins/customUserColors";
 import { hash as h64 } from "@intrnl/xxhash64";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";

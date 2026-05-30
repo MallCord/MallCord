@@ -38,12 +38,12 @@ import { Alerts, SearchableSelect, Select, useState } from "@webpack/common";
 
 const ICON_STYLE: React.CSSProperties = { width: 20, height: 20, borderRadius: 4, verticalAlign: "middle" };
 
-function EquicordIcon() {
-    return <img src="https://equicord.org/assets/favicon.png" alt="Equicord" style={ICON_STYLE} />;
+function MallCordIcon() {
+    return <img src="https://mallcord.org/assets/favicon.png" alt="MallCord" style={ICON_STYLE} />;
 }
 
 function VencordIcon() {
-    return <img src="https://equicord.org/assets/icons/vencord/icon-light.png" alt="Vencord" style={ICON_STYLE} />;
+    return <img src="https://mallcord.org/assets/icons/vencord/icon-light.png" alt="Vencord" style={ICON_STYLE} />;
 }
 
 const RefreshIcon = findComponentByCodeLazy("M4 12a8 8 0 0 1 14.93-4H15");
@@ -59,7 +59,7 @@ function validateUrl(url: string) {
 }
 
 const cloudBackendOptions = [
-    { label: "Equicord Cloud", value: "https://cloud.equicord.org/" },
+    { label: "MallCord Cloud", value: "https://cloud.mallcord.org/" },
     { label: "Vencord Cloud", value: "https://api.vencord.dev/" }
 ];
 
@@ -93,12 +93,12 @@ function CloudTab() {
         <SettingsTab>
             <Heading className={Margins.top16}>Cloud Integration</Heading>
             <Paragraph className={Margins.bottom16}>
-                Equicord's cloud integration allows you to sync your settings across multiple devices and Discord installations. Your data is securely stored and can be easily restored at any time.
+                MallCord's cloud integration allows you to sync your settings across multiple devices and Discord installations. Your data is securely stored and can be easily restored at any time.
             </Paragraph>
 
             <Notice.Info className={Margins.bottom16}>
-                We use our own <Link href="https://github.com/Equicord/Equicloud">Equicloud backend</Link> with enhanced features.
-                View our <Link href="https://equicord.org/cloud/policy">privacy policy</Link> to see what we store and how we use your data.
+                We use our own <Link href="https://github.com/MallCord/Equicloud">Equicloud backend</Link> with enhanced features.
+                View our <Link href="https://mallcord.org/cloud/policy">privacy policy</Link> to see what we store and how we use your data.
                 Equicloud is BSD 3.0 licensed, so you can self-host if preferred.
             </Notice.Info>
 
@@ -119,7 +119,7 @@ function CloudTab() {
 
             <Heading className={Margins.top20}>Cloud Backend</Heading>
             <Paragraph className={Margins.bottom16}>
-                Choose which cloud backend to use for storing your settings. You can switch between Equicord's and Vencord's cloud services, or use a self-hosted instance.
+                Choose which cloud backend to use for storing your settings. You can switch between MallCord's and Vencord's cloud services, or use a self-hosted instance.
             </Paragraph>
 
             <div className={Margins.bottom8}>
@@ -128,7 +128,7 @@ function CloudTab() {
                     value={cloudBackendOptions.find(o => o.value === cloud.url)?.value}
                     onChange={v => changeUrl(v)}
                     closeOnSelect={true}
-                    renderOptionPrefix={o => o?.value?.includes("equicord") ? <EquicordIcon /> : <VencordIcon />}
+                    renderOptionPrefix={o => o?.value?.includes("mallcord") ? <MallCordIcon /> : <VencordIcon />}
                 />
             </div>
 
@@ -164,7 +164,7 @@ function CloudTab() {
 
             <Heading className={Margins.top20}>Settings Sync</Heading>
             <Paragraph className={Margins.bottom16}>
-                Synchronize your Equicord settings to the cloud. This makes it easy to keep your configuration consistent across multiple devices without manual import/export.
+                Synchronize your MallCord settings to the cloud. This makes it easy to keep your configuration consistent across multiple devices without manual import/export.
             </Paragraph>
 
             <FormSwitch

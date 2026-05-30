@@ -30,11 +30,11 @@ export interface UpdateSession {
 
 export type ChangelogHistory = UpdateSession[];
 
-const CHANGELOG_HISTORY_KEY = "EquicordChangelog_History";
-const LAST_SEEN_HASH_KEY = "EquicordChangelog_LastSeenHash";
-const KNOWN_PLUGINS_KEY = "EquicordChangelog_KnownPlugins";
-const KNOWN_SETTINGS_KEY = "EquicordChangelog_KnownSettings";
-const LAST_REPO_CHECK_KEY = "EquicordChangelog_LastRepoCheck";
+const CHANGELOG_HISTORY_KEY = "MallCordChangelog_History";
+const LAST_SEEN_HASH_KEY = "MallCordChangelog_LastSeenHash";
+const KNOWN_PLUGINS_KEY = "MallCordChangelog_KnownPlugins";
+const KNOWN_SETTINGS_KEY = "MallCordChangelog_KnownSettings";
+const LAST_REPO_CHECK_KEY = "MallCordChangelog_LastRepoCheck";
 const GITHUB_COMPARE_ENDPOINT = "https://api.github.com/repos";
 
 type KnownPluginSettingsMap = Map<string, Set<string>>;

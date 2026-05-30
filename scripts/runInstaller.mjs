@@ -25,7 +25,7 @@ import { Readable } from "stream";
 import { finished } from "stream/promises";
 import { fileURLToPath } from "url";
 
-const BASE_URL = "https://github.com/Equicord/Equilotl/releases/latest/download/";
+const BASE_URL = "https://github.com/MallCord/Equilotl/releases/latest/download/";
 const INSTALLER_PATH_DARWIN = "Equilotl.app/Contents/MacOS/Equilotl";
 const INSTALLER_APP_DARWIN = "Equilotl.app";
 
@@ -73,7 +73,7 @@ async function ensureBinary() {
 
     const res = await fetch(BASE_URL + filename, {
         headers: {
-            "User-Agent": "Equicord (https://github.com/Equicord/Equicord)",
+            "User-Agent": "MallCord (https://github.com/unfamiliardev/MallCord)",
             "If-None-Match": etag
         }
     });
@@ -133,9 +133,9 @@ try {
         stdio: "inherit",
         env: {
             ...process.env,
-            EQUICORD_USER_DATA_DIR: BASE_DIR,
-            EQUICORD_DIRECTORY: join(BASE_DIR, "dist/desktop"),
-            EQUICORD_DEV_INSTALL: "1"
+            MALLCORD_USER_DATA_DIR: BASE_DIR,
+            MALLCORD_DIRECTORY: join(BASE_DIR, "dist/desktop"),
+            MALLCORD_DEV_INSTALL: "1"
         }
     });
 } catch {

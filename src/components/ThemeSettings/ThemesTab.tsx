@@ -511,7 +511,7 @@ function ThemesTab() {
     function changeThemeLibraryURLs() {
         settings.themeLinks = settings.themeLinks.map(link => {
             if (link.startsWith("https://discord-themes.com/api")) {
-                return link.replace("https://discord-themes.com/api", "https://themes.equicord.org/api");
+                return link.replace("https://discord-themes.com/api", "https://themes.mallcord.org/api");
             }
             return link;
         });
@@ -1033,7 +1033,7 @@ export function CspErrorCard() {
     const allowUrl = async (url: string) => {
         const { origin: baseUrl, host } = new URL(url);
 
-        const result = await VencordNative.csp.requestAddOverride(baseUrl, ["connect-src", "img-src", "style-src", "font-src"], "Equicord Themes");
+        const result = await VencordNative.csp.requestAddOverride(baseUrl, ["connect-src", "img-src", "style-src", "font-src"], "MallCord Themes");
         if (result !== "ok") return;
 
         CspBlockedUrls.forEach(url => {
