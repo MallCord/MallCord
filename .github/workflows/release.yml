@@ -31,14 +31,20 @@ jobs:
 
             - run: pnpm buildStandalone
 
+            - name: Build the installer exe
+              run: npx --yes @yao-pkg/pkg installer/mallcord-setup.cjs -t node18-win-x64 -o mallcord-setup.exe
+
             # The in-app updater looks at the latest release, reads the commit
             # hash off the end of its name, and grabs the desktop.asar asset.
+            # mallcord-setup.exe is shipped alongside for fresh installs.
             - name: Publish release
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: latest
                   name: MallCord ${{ github.sha }}
                   body: Automatic build of ${{ github.sha }}.
-                  files: dist/desktop.asar
+                  files: |
+                      dist/desktop.asar
+                      mallcord-setup.exe
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

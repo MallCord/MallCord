@@ -31,6 +31,7 @@
         "inject": "node scripts/runInstaller.mjs -- --install",
         "uninject": "node scripts/runInstaller.mjs -- --uninstall",
         "repair": "node scripts/runInstaller.mjs -- --repair",
+        "package:installer": "npx --yes @yao-pkg/pkg installer/mallcord-setup.cjs -t node20-win-x64 -o mallcord-setup.exe",
         "lint": "eslint",
         "lint-styles": "stylelint \"src/**/*.css\" --ignore-pattern src/userplugins",
         "lint-styles:fix": "pnpm lint-styles --fix",
