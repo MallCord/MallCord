@@ -33,9 +33,6 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
     const settings = Settings.plugins[plugin.name];
     const pluginMeta = PluginMeta[plugin.name];
     const isMallCordPlugin = pluginMeta.folderName.startsWith("src/mallcordplugins/") ?? false;
-    const isVencordPlugin = pluginMeta.folderName.startsWith("src/plugins/") ?? false;
-    const isUserPlugin = pluginMeta?.userPlugin ?? false;
-    const isModifiedPlugin = plugin.isModified ?? false;
 
     const isEnabled = () => isPluginEnabled(plugin.name);
 
@@ -91,28 +88,10 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
 
     const pluginInfo = [
         {
-            condition: isModifiedPlugin,
-            src: "https://mallcord.org/assets/icons/mallcord/modified.png",
-            alt: "Modified",
-            title: "Modified Vencord Plugin"
-        },
-        {
             condition: isMallCordPlugin,
             src: "https://iili.io/C3AK6Na.png",
             alt: "MallCord",
             title: "MallCord Plugin"
-        },
-        {
-            condition: isVencordPlugin,
-            src: "https://mallcord.org/assets/icons/vencord/icon-light.png",
-            alt: "Vencord",
-            title: "Vencord Plugin"
-        },
-        {
-            condition: isUserPlugin,
-            src: "https://mallcord.org/assets/icons/misc/userplugin.png",
-            alt: "User",
-            title: "User Plugin"
         }
     ];
 
