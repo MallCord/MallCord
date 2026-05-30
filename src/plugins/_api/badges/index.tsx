@@ -33,8 +33,23 @@ import Plugins, { PluginMeta } from "~plugins";
 import { MallCordDonorModal, MallCordTranslatorModal, VencordDonorModal } from "./modals";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
-const MALLCORD_CONTRIBUTOR_BADGE = "https://mallcord.org/assets/favicon.png";
+const MALLCORD_CONTRIBUTOR_BADGE = "https://iili.io/C3RNs5v.png";
 const USERPLUGIN_CONTRIBUTOR_BADGE = "https://mallcord.org/assets/icons/misc/userplugin.png";
+const MALLCORD_DEV_BADGE = "https://i.pinimg.com/736x/0d/7a/bd/0d7abdc86f81fff675983ca4e63d23a3.jpg";
+
+const MallCordDevBadge: ProfileBadge = {
+    id: "mallcord_dev_badge",
+    description: "MallCord Dev",
+    iconSrc: MALLCORD_DEV_BADGE,
+    position: BadgePosition.START,
+    shouldShow: ({ userId }) => userId === "740252723160809512",
+    props: {
+        style: {
+            borderRadius: "50%",
+            transform: "scale(0.9)"
+        }
+    },
+};
 
 const ContributorBadge: ProfileBadge = {
     id: "vencord_contributor_badge",
@@ -180,7 +195,7 @@ export default definePlugin({
         }
     },
 
-    userProfileBadges: [ContributorBadge, MallCordContributorBadge, UserPluginContributorBadge],
+    userProfileBadges: [MallCordDevBadge, ContributorBadge, MallCordContributorBadge, UserPluginContributorBadge],
 
     async start() {
         await loadAllBadges();

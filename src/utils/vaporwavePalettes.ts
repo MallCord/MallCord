@@ -4,12 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-/**
- * Color palettes for MallCord's vaporwave theme. Each maps the `--mc-*`
- * custom properties that src/vaporwave.css consumes. Selected via the
- * `vaporwavePalette` setting; injected as a `:root {}` block when the
- * Vaporwave theme is enabled.
- */
+// Color palettes for the vaporwave theme. Each sets the --mc-* vars that
+// vaporwave.css uses; the chosen one is injected as a :root block.
 
 export interface VaporwavePalette {
     label: string;

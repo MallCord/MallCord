@@ -4,27 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-/**
- * Self-contained native injector for MallCord.
- *
- * Replaces the old "download Equilotl and run it" flow. This patches
- * Discord directly, using the exact folder-shim mechanism the in-app
- * host-update hook relies on (see src/main/applyHostPatch.ts):
- *
- *   - rename vanilla `resources/app.asar` -> `resources/_app.asar`
- *   - create a *folder* named `resources/app.asar/` with a package.json +
- *     index.js whose index.js `require()`s our built `dist/desktop/patcher.js`
- *
- * Electron treats a directory named `app.asar` as an unpacked app and loads
- * it over the archive, so it runs our stub, which loads the patcher, which
- * loads the original `_app.asar`. Idempotent: the `_app.asar` marker means
- * re-running is safe (we just refresh the stub's patcher path).
- *
- * Usage (via package.json):
- *   pnpm inject     -> --install
- *   pnpm uninject   -> --uninstall
- *   pnpm repair     -> --repair
- */
+// Patches Discord without any external installer. Renames app.asar to
+// _app.asar and drops a folder named app.asar that just requires our patcher.
+// pnpm inject / uninject / repair map to --install / --uninstall / --repair.
 
 import "./checkNodeVersion.js";
 
