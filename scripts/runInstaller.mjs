@@ -1,143 +1,228 @@
 /*
- * Vencord, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * MallCord, a vaporwave-inspired Discord client mod
+ * Copyright (c) 2026 unfamiliardev
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/**
+ * Self-contained native injector for MallCord.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Replaces the old "download Equilotl and run it" flow. This patches
+ * Discord directly, using the exact folder-shim mechanism the in-app
+ * host-update hook relies on (see src/main/applyHostPatch.ts):
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *   - rename vanilla `resources/app.asar` -> `resources/_app.asar`
+ *   - create a *folder* named `resources/app.asar/` with a package.json +
+ *     index.js whose index.js `require()`s our built `dist/desktop/patcher.js`
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Electron treats a directory named `app.asar` as an unpacked app and loads
+ * it over the archive, so it runs our stub, which loads the patcher, which
+ * loads the original `_app.asar`. Idempotent: the `_app.asar` marker means
+ * re-running is safe (we just refresh the stub's patcher path).
+ *
+ * Usage (via package.json):
+ *   pnpm inject     -> --install
+ *   pnpm uninject   -> --uninstall
+ *   pnpm repair     -> --repair
+ */
 
 import "./checkNodeVersion.js";
 
-import { execFileSync, execSync } from "child_process";
-import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { execSync } from "child_process";
+import { existsSync, lstatSync, mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from "fs";
+import { homedir } from "os";
 import { dirname, join } from "path";
-import { Readable } from "stream";
-import { finished } from "stream/promises";
+import { setTimeout as sleep } from "timers/promises";
 import { fileURLToPath } from "url";
 
-const BASE_URL = "https://github.com/MallCord/Equilotl/releases/latest/download/";
-const INSTALLER_PATH_DARWIN = "Equilotl.app/Contents/MacOS/Equilotl";
-const INSTALLER_APP_DARWIN = "Equilotl.app";
-
 const BASE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..");
-const FILE_DIR = join(BASE_DIR, "dist", "Installer");
-const ETAG_FILE = join(FILE_DIR, "etag.txt");
+const PATCHER_PATH = join(BASE_DIR, "dist", "desktop", "patcher.js");
 
-function getFilename() {
-    switch (process.platform) {
-        case "win32":
-            return "EquilotlCli.exe";
-        case "darwin":
-            switch (process.arch) {
-                case "x64":
-                    return "Equilotl-darwin-x64.zip";
-                case "arm64":
-                    return "Equilotl-darwin-arm64.zip";
-                default:
-                    throw new Error("Unsupported macOS architecture: " + process.arch);
+const STUB_PACKAGE = JSON.stringify({ name: "discord", main: "index.js" });
+const makeStubIndex = patcherPath => `require(${JSON.stringify(patcherPath.replace(/\\/g, "/"))});\n`;
+
+const VERSION_PREFIX = "app-";
+
+function getResourcesDirs() {
+    const dirs = [];
+
+    if (process.platform === "win32") {
+        const local = process.env.LOCALAPPDATA;
+        if (!local) return dirs;
+        for (const branch of ["Discord", "DiscordPTB", "DiscordCanary", "DiscordDevelopment"]) {
+            const branchDir = join(local, branch);
+            if (!existsSync(branchDir)) continue;
+            for (const name of readdirSync(branchDir)) {
+                if (!name.startsWith(VERSION_PREFIX)) continue;
+                const res = join(branchDir, name, "resources");
+                if (existsSync(res)) dirs.push(res);
             }
-        case "linux":
-            return "EquilotlCli-linux";
-        default:
-            throw new Error("Unsupported platform: " + process.platform);
-    }
-}
-
-async function ensureBinary() {
-    const filename = getFilename();
-    console.log("Downloading " + filename);
-
-    mkdirSync(FILE_DIR, { recursive: true });
-
-    const downloadName = join(FILE_DIR, filename);
-    const outputFile = process.platform === "darwin"
-        ? join(FILE_DIR, INSTALLER_PATH_DARWIN)
-        : downloadName;
-    const outputApp = process.platform === "darwin"
-        ? join(FILE_DIR, INSTALLER_APP_DARWIN)
-        : null;
-
-    const etag = existsSync(outputFile) && existsSync(ETAG_FILE)
-        ? readFileSync(ETAG_FILE, "utf-8")
-        : null;
-
-    const res = await fetch(BASE_URL + filename, {
-        headers: {
-            "User-Agent": "MallCord (https://github.com/unfamiliardev/MallCord)",
-            "If-None-Match": etag
         }
-    });
-
-    if (res.status === 304) {
-        console.log("Up to date, not redownloading!");
-        return outputFile;
-    }
-    if (!res.ok)
-        throw new Error(`Failed to download installer: ${res.status} ${res.statusText}`);
-
-    writeFileSync(ETAG_FILE, res.headers.get("etag"));
-
-    if (process.platform === "darwin") {
-        console.log("Saving zip...");
-        const zip = new Uint8Array(await res.arrayBuffer());
-        writeFileSync(downloadName, zip);
-
-        console.log("Unzipping app bundle...");
-        execSync(`ditto -x -k '${downloadName}' '${FILE_DIR}'`);
-
-        console.log("Clearing quarantine from installer app (this is required to run it)");
-        console.log("xattr might error, that's okay");
-
-        const logAndRun = cmd => {
-            console.log("Running", cmd);
-            try {
-                execSync(cmd);
-            } catch { }
-        };
-        logAndRun(`sudo xattr -dr com.apple.quarantine '${outputApp}'`);
+    } else if (process.platform === "darwin") {
+        for (const branch of ["Discord", "Discord PTB", "Discord Canary"]) {
+            const res = join("/Applications", `${branch}.app`, "Contents", "Resources");
+            if (existsSync(res)) dirs.push(res);
+        }
     } else {
-        // WHY DOES NODE FETCH RETURN A WEB STREAM OH MY GOD
-        const body = Readable.fromWeb(res.body);
-        await finished(body.pipe(createWriteStream(outputFile, {
-            mode: 0o755,
-            autoClose: true
-        })));
+        // linux: best-effort list of common install locations
+        const candidates = [
+            "/usr/share/discord/resources",
+            "/usr/lib/discord/resources",
+            "/usr/lib64/discord/resources",
+            "/opt/discord/resources",
+            "/opt/Discord/resources",
+            "/opt/DiscordCanary/resources",
+            "/opt/DiscordPTB/resources",
+            join(homedir(), ".local/share/discord/resources"),
+            join(homedir(), ".local/share/DiscordCanary/resources"),
+        ];
+        for (const c of candidates) if (existsSync(c)) dirs.push(c);
     }
 
-    console.log("Finished downloading!");
-
-    return outputFile;
+    return dirs;
 }
 
-
-
-const installerBin = await ensureBinary();
-
-console.log("Now running Installer...");
-
-const argStart = process.argv.indexOf("--");
-const args = argStart === -1 ? [] : process.argv.slice(argStart + 1);
-
-try {
-    execFileSync(installerBin, args, {
-        stdio: "inherit",
-        env: {
-            ...process.env,
-            MALLCORD_USER_DATA_DIR: BASE_DIR,
-            MALLCORD_DIRECTORY: join(BASE_DIR, "dist/desktop"),
-            MALLCORD_DEV_INSTALL: "1"
+function killDiscord() {
+    console.log("Closing Discord so its files can be patched...");
+    try {
+        if (process.platform === "win32") {
+            for (const exe of ["Discord.exe", "DiscordPTB.exe", "DiscordCanary.exe", "DiscordDevelopment.exe"]) {
+                try {
+                    execSync(`taskkill /F /T /IM ${exe}`, { stdio: "ignore" });
+                } catch {
+                    // not running -> taskkill exits non-zero, that's fine
+                }
+            }
+        } else {
+            try {
+                execSync("pkill -i discord", { stdio: "ignore" });
+            } catch {
+                // nothing running
+            }
         }
-    });
-} catch {
-    console.error("Something went wrong. Please check the logs above.");
+    } catch (err) {
+        console.warn("Could not close Discord automatically. Close it manually if patching fails.", err?.message ?? err);
+    }
 }
+
+/** rename with a few retries to ride out lingering file locks after closing Discord */
+async function renameWithRetry(from, to) {
+    let lastErr;
+    for (let attempt = 0; attempt < 6; attempt++) {
+        try {
+            renameSync(from, to);
+            return;
+        } catch (err) {
+            lastErr = err;
+            if (err.code !== "EBUSY" && err.code !== "EPERM" && err.code !== "EACCES") throw err;
+            await sleep(500);
+        }
+    }
+    throw lastErr;
+}
+
+async function patch(resources) {
+    const app = join(resources, "app.asar");
+    const _app = join(resources, "_app.asar");
+
+    if (existsSync(_app)) {
+        // already patched -> just refresh the stub so it points at the current patcher path
+        if (existsSync(app) && lstatSync(app).isDirectory()) {
+            writeFileSync(join(app, "package.json"), STUB_PACKAGE);
+            writeFileSync(join(app, "index.js"), makeStubIndex(PATCHER_PATH));
+            return "refreshed";
+        }
+        return "already";
+    }
+
+    if (!existsSync(app) || lstatSync(app).isDirectory()) return "skip";
+
+    await renameWithRetry(app, _app);
+    try {
+        mkdirSync(app);
+        writeFileSync(join(app, "package.json"), STUB_PACKAGE);
+        writeFileSync(join(app, "index.js"), makeStubIndex(PATCHER_PATH));
+    } catch (err) {
+        // roll back the rename so we never leave Discord without an app.asar
+        try {
+            rmSync(app, { recursive: true, force: true });
+            renameSync(_app, app);
+        } catch (cleanupErr) {
+            console.error("Rollback failed:", cleanupErr);
+        }
+        throw err;
+    }
+    return "patched";
+}
+
+async function unpatch(resources) {
+    const app = join(resources, "app.asar");
+    const _app = join(resources, "_app.asar");
+
+    if (!existsSync(_app)) return "notpatched";
+
+    if (existsSync(app) && lstatSync(app).isDirectory()) {
+        rmSync(app, { recursive: true, force: true });
+    }
+    await renameWithRetry(_app, app);
+    return "unpatched";
+}
+
+async function main() {
+    const argStart = process.argv.indexOf("--");
+    const args = argStart === -1 ? [] : process.argv.slice(argStart + 1);
+    const action = args.includes("--uninstall")
+        ? "uninstall"
+        : args.includes("--repair")
+            ? "repair"
+            : "install";
+
+    if (action !== "uninstall" && !existsSync(PATCHER_PATH)) {
+        console.error("Could not find the built patcher at dist/desktop/patcher.js.");
+        console.error("Run `pnpm build` first, then `pnpm inject`.");
+        process.exit(1);
+    }
+
+    const resourcesDirs = getResourcesDirs();
+    if (!resourcesDirs.length) {
+        console.error("No Discord installation found. Is Discord installed?");
+        process.exit(1);
+    }
+
+    console.log(`Found ${resourcesDirs.length} Discord install(s).`);
+    killDiscord();
+    await sleep(1500);
+
+    let ok = 0;
+    for (const resources of resourcesDirs) {
+        try {
+            if (action === "uninstall") {
+                const r = await unpatch(resources);
+                console.log(`  [${r}] ${resources}`);
+            } else {
+                if (action === "repair") await unpatch(resources);
+                const r = await patch(resources);
+                console.log(`  [${r}] ${resources}`);
+            }
+            ok++;
+        } catch (err) {
+            console.error(`  [failed] ${resources}\n    ${err?.message ?? err}`);
+        }
+    }
+
+    if (ok === 0) {
+        console.error("Nothing was changed. If files were locked, fully close Discord and try again.");
+        process.exit(1);
+    }
+
+    console.log(
+        action === "uninstall"
+            ? "MallCord removed. Start Discord normally for vanilla."
+            : "Done! Start Discord to load MallCord."
+    );
+}
+
+main().catch(err => {
+    console.error("Something went wrong:", err);
+    process.exit(1);
+});
