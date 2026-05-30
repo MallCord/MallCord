@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { sendBotMessage } from "@api/Commands";
 import * as DataStore from "@api/DataStore";
 import { addMessagePreSendListener, removeMessagePreSendListener } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
@@ -126,7 +127,24 @@ export default definePlugin({
     name: "MessageStatistics",
     description: "Tracks how many messages you send per day, week, month and year, with a daily goal and streaks.",
     authors: [MallCordDevs.Dann],
+    dependencies: ["CommandsAPI"],
     settings,
+
+    commands: [
+        {
+            name: "mystats",
+            description: "Show your message stats here in chat",
+            options: [],
+            execute: async (_, ctx) => {
+                const ts = (await DataStore.get<number[]>(KEY)) ?? [];
+                const now = Date.now();
+                const since = (ms: number) => ts.filter(t => now - t < ms).length;
+                sendBotMessage(ctx.channel.id, {
+                    content: `📊 **Your messages** — today **${since(DAY)}** · week **${since(7 * DAY)}** · month **${since(30 * DAY)}** · year **${since(365 * DAY)}** · all-time **${ts.length}**`
+                });
+            }
+        }
+    ],
 
     start() {
         this.pre = addMessagePreSendListener(() => { record(); });
