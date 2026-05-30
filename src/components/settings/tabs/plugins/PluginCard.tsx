@@ -98,7 +98,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
         },
         {
             condition: isMallCordPlugin,
-            src: "https://mallcord.org/assets/favicon.png",
+            src: "https://iili.io/C3AK6Na.png",
             alt: "MallCord",
             title: "MallCord Plugin"
         },

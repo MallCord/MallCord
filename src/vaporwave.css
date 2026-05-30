@@ -5,18 +5,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-:root {
-    /* MallCord vaporwave palette */
-    --mc-pink: #ff71ce;
-    --mc-cyan: #01cdfe;
-    --mc-purple: #b967ff;
-    --mc-mint: #05ffa1;
-    --mc-bg-deep: #190033;
-    --mc-bg: #25004d;
-    --mc-bg-soft: #320066;
-    --mc-text: #f7f0ff;
-    --mc-text-dim: #c8a2ff;
-}
+/*
+ * The --mc-* palette variables are injected at runtime from the selected
+ * palette (see src/utils/vaporwavePalettes.ts), so they're not defined here.
+ */
 
 .theme-dark,
 .theme-light,

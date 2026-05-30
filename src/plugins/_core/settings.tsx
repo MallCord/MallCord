@@ -5,11 +5,10 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { BackupRestoreIcon, CloudIcon, LogIcon, MainSettingsIcon, PaintbrushIcon, PatchHelperIcon, PluginsIcon, UpdaterIcon } from "@components/Icons";
+import { BackupRestoreIcon, LogIcon, MainSettingsIcon, PaintbrushIcon, PatchHelperIcon, PluginsIcon, UpdaterIcon } from "@components/Icons";
 import {
     BackupAndRestoreTab,
     ChangelogTab,
-    CloudTab,
     PatchHelperTab,
     PluginsTab,
     ThemesTab,
@@ -221,13 +220,6 @@ export default definePlugin({
                 title: "Changelog",
                 Component: ChangelogTab,
                 Icon: LogIcon,
-            }),
-            buildEntry({
-                key: "mallcord_cloud",
-                title: "Cloud",
-                panelTitle: "MallCord Cloud",
-                Component: CloudTab,
-                Icon: CloudIcon
             }),
             buildEntry({
                 key: "mallcord_backup_restore",

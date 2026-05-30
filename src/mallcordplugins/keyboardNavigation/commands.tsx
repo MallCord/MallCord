@@ -30,7 +30,6 @@ export const actions: ButtonAction[] = [
     { id: "openPluginSettings", label: "Open Plugin tab", callback: () => SettingsRouter.openUserSettings("mallcord_plugins_panel"), registrar: "MallCord" },
     { id: "openThemesSettings", label: "Open Themes tab", callback: () => SettingsRouter.openUserSettings("mallcord_themes_panel"), registrar: "MallCord" },
     { id: "openUpdaterSettings", label: "Open Updater tab", callback: () => SettingsRouter.openUserSettings("mallcord_updater_panel"), registrar: "MallCord" },
-    { id: "openMallCordCloudSettings", label: "Open Cloud tab", callback: () => SettingsRouter.openUserSettings("mallcord_cloud_panel"), registrar: "MallCord" },
     { id: "openBackupSettings", label: "Open Backup & Restore tab", callback: () => SettingsRouter.openUserSettings("mallcord_backup_restore_panel"), registrar: "MallCord" },
     { id: "restartClient", label: "Restart Client", callback: () => relaunch(), registrar: "MallCord" },
     { id: "openQuickCSSFile", label: "Open Quick CSS File", callback: () => VencordNative.quickCss.openEditor(), registrar: "MallCord" },

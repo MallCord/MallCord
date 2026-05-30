@@ -28,7 +28,7 @@ export function DonateButton({
     className,
     ...props
 }: Partial<ButtonProps> & { mallcord?: boolean; }) {
-    const link = mallcord ? "https://github.com/sponsors/thororen1234" : "https://github.com/sponsors/Vendicated";
+    const link = mallcord ? "https://patreon.com/pepsify" : "https://github.com/sponsors/Vendicated";
     return (
         <Button
             {...props}

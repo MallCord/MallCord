@@ -44,6 +44,7 @@ export interface Settings {
     autoUpdateNotification: boolean;
     useQuickCss: boolean;
     vaporwaveTheme: boolean;
+    vaporwavePalette: string;
     eagerPatches: boolean;
     enabledThemes: string[];
     enabledThemeLinks: string[];
@@ -94,13 +95,6 @@ export interface Settings {
         logLimit: number;
     };
 
-    cloud: {
-        authenticated: boolean;
-        url: string;
-        settingsSync: boolean;
-        settingsSyncVersion: number;
-    };
-
     ignoreResetWarning: boolean;
 
     userCssVars: {
@@ -115,6 +109,7 @@ const DefaultSettings: Settings = {
     autoUpdateNotification: true,
     useQuickCss: true,
     vaporwaveTheme: false,
+    vaporwavePalette: "classic",
     themeLinks: [],
     eagerPatches: false, // Eagerly patching no longer works due to module factories with the same id being able to have different sources now.
     enabledThemes: [],
@@ -145,13 +140,6 @@ const DefaultSettings: Settings = {
         useNative: "not-focused",
         missed: true,
         logLimit: 50
-    },
-
-    cloud: {
-        authenticated: false,
-        url: "https://cloud.mallcord.org/",
-        settingsSync: false,
-        settingsSyncVersion: 0
     },
 
     ignoreResetWarning: false,
@@ -203,7 +191,6 @@ export const SettingsStore = new SettingsStoreClass(settings, {
 
 if (!IS_REPORTER) {
     SettingsStore.addGlobalChangeListener((_, path) => {
-        SettingsStore.plain.cloud.settingsSyncVersion = Date.now();
         VencordNative.settings.set(SettingsStore.plain, path);
     });
 }

@@ -31,6 +31,7 @@ import { Alerts, GuildMemberStore, React, useMemo, UserStore } from "@webpack/co
 import { DonateButtonComponent } from "./DonateButton";
 import { MacOSVibrancySettings } from "./MacVibrancySettings";
 import { NotificationSection } from "./NotificationSettings";
+import { VaporwaveSettings } from "./VaporwaveSettings";
 import { WindowsMaterialSettings } from "./WindowsMaterialSettings";
 
 const DEFAULT_DONATE_IMAGE = "https://cdn.discordapp.com/emojis/1026533090627174460.png";
@@ -279,6 +280,8 @@ function MallCordSettings() {
             </Notice.Info>
 
             <Switches />
+
+            <VaporwaveSettings />
 
             <MacOSVibrancySettings />
             <WindowsMaterialSettings />
