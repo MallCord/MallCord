@@ -17,7 +17,7 @@
 
 ## Building MallCord from source
 
-Works on **Windows, macOS, Linux and *BSD** — anything with Git, Node and the Discord desktop app. `pnpm inject` auto-detects your Discord install (Stable/PTB/Canary/Dev, including `/opt`, distro packages, `~/.local`, BSD `/usr/local`, Flatpak and Snap layouts).
+Works on **Windows**, **macOS**, **Linux** and **BSD** — anything with Git, Node and the Discord desktop app. `pnpm inject` auto-detects your Discord install (Stable/PTB/Canary/Dev, including `/opt`, distro packages, `~/.local`, BSD `/usr/local`, Flatpak and Snap layouts).
 
 ### Dependencies
 
@@ -67,10 +67,6 @@ pnpm buildWeb
 After building MallCord's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser's guide for installing custom extensions, if supported.
 
 Note: Firefox extension zip requires Firefox for developers
-
-## Enabling the Vaporwave theme
-
-Open **Discord Settings → MallCord** and toggle **Vaporwave Theme**. No restart required.
 
 ## Support
 
