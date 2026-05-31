@@ -9,9 +9,6 @@
 [Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
-The signature feature is a toggleable **Vaporwave** theme you can switch on right from the MallCord settings tab — neon
-pink/cyan/purple, glow accents, and a retro grid, applied across the client.
-
 > [!NOTE]
 > MallCord is brand new (v0.1b). There is no prebuilt installer yet — for now it builds from source (see below).
 > Prebuilt releases will land on the [Releases page](https://github.com/unfamiliardev/MallCord/releases) as the
