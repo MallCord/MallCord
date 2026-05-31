@@ -17,6 +17,8 @@
 
 ## Building MallCord from source
 
+Works on **Windows, macOS, Linux and *BSD** — anything with Git, Node and the Discord desktop app. `pnpm inject` auto-detects your Discord install (Stable/PTB/Canary/Dev, including `/opt`, distro packages, `~/.local`, BSD `/usr/local`, Flatpak and Snap layouts).
+
 ### Dependencies
 
 [Git](https://git-scm.com/download) and [Node.JS LTS](https://nodejs.dev/en/) are required.

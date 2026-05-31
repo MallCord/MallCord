@@ -46,19 +46,41 @@ function getResourcesDirs() {
             if (existsSync(res)) dirs.push(res);
         }
     } else {
-        // linux: best-effort list of common install locations
-        const candidates = [
-            "/usr/share/discord/resources",
-            "/usr/lib/discord/resources",
-            "/usr/lib64/discord/resources",
-            "/opt/discord/resources",
-            "/opt/Discord/resources",
-            "/opt/DiscordCanary/resources",
-            "/opt/DiscordPTB/resources",
-            join(homedir(), ".local/share/discord/resources"),
-            join(homedir(), ".local/share/DiscordCanary/resources"),
+        // linux / *bsd: Discord ships its asar under <installDir>/resources.
+        // Scan a matrix of common base dirs x branch folder names (covers
+        // distro packages, /opt, ~/.local, BSD's /usr/local, Flatpak and Snap).
+        const home = homedir();
+        const bases = [
+            "/usr/share", "/usr/lib", "/usr/lib64", "/opt",
+            "/usr/local/share", "/usr/local/lib", "/usr/local", // BSD / source installs
+            join(home, ".local/share"),
+            // Flatpak (system + user)
+            "/var/lib/flatpak/app/com.discordapp.Discord/current/active/files",
+            join(home, ".local/share/flatpak/app/com.discordapp.Discord/current/active/files"),
+            // Snap (usually read-only, but try anyway)
+            "/snap/discord/current/usr/share",
         ];
-        for (const c of candidates) if (existsSync(c)) dirs.push(c);
+        const branches = [
+            "discord", "Discord",
+            "discord-canary", "DiscordCanary",
+            "discord-ptb", "DiscordPTB",
+            "discord-development", "DiscordDevelopment",
+        ];
+
+        const seen = new Set();
+        const tryDir = res => {
+            if (!res || seen.has(res)) return;
+            seen.add(res);
+            if (existsSync(join(res, "app.asar")) || existsSync(join(res, "_app.asar"))) dirs.push(res);
+        };
+
+        for (const base of bases) {
+            // some bases already point straight at the install dir
+            tryDir(join(base, "resources"));
+            for (const branch of branches) {
+                tryDir(join(base, branch, "resources"));
+            }
+        }
     }
 
     return dirs;
