@@ -1,4 +1,4 @@
-# [<img src="https://iili.io/C3TD6bt.md.png" width="40" align="left" alt="MallCord">](https://github.com/MallCord/MallCord) MallCord
+# [<img src="https://iili.io/C3jZGrg.th.png" width="40" align="left" alt="MallCord">](https://github.com/MallCord/MallCord) MallCord
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
 [![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
