@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
 [![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
+[![Discord](https://img.shields.io/badge/Discord-join-b967ff?style=flat&logo=discord&logoColor=white)](https://discord.gg/VBAJFf6fY6)
 
 > aesthetic vibes for your client.
 
@@ -68,6 +69,12 @@ Note: Firefox extension zip requires Firefox for developers
 ## Enabling the Vaporwave theme
 
 Open **Discord Settings → MallCord** and toggle **Vaporwave Theme**. No restart required.
+
+## Support
+
+Need help, want to report a bug, or just hang out? Join the MallCord Discord server:
+
+**https://discord.gg/VBAJFf6fY6**
 
 ## Credits
 
