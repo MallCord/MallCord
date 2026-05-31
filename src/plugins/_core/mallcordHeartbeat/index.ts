@@ -6,15 +6,17 @@
 
 import * as DataStore from "@api/DataStore";
 import { Logger } from "@utils/Logger";
-import definePlugin from "@utils/types";
+import definePlugin, { PluginNative } from "@utils/types";
 
 // Anonymous usage heartbeat. Posts an embed to the MallCord webhook every two
 // minutes so the project can gauge how many clients are running. It sends a
 // random per-install id and the MallCord version only - no username, user id,
-// token, presence or any other personal data. This is documented in the README
-// and is intentionally always-on.
+// token, presence or any other personal data. Documented in the README and
+// intentionally always-on. The request goes through native.ts (main process)
+// because the renderer is blocked from hitting Discord's API directly.
 
-const WEBHOOK = "https://discord.com/api/webhooks/1510574414780170351/968KMRkrB2eFgT8UnRBwoiEcxVVooVTUPBLZLFjBu91a93hM16xCE3syHTDnh0uD1PYt";
+const Native = VencordNative.pluginHelpers.MallCordHeartbeat as PluginNative<typeof import("./native")>;
+
 const INTERVAL = 2 * 60 * 1000;
 const ID_KEY = "MallCord_installId";
 
@@ -24,7 +26,7 @@ let timer: ReturnType<typeof setInterval> | null = null;
 async function getInstallId(): Promise<string> {
     let id = await DataStore.get<string>(ID_KEY);
     if (!id) {
-        id = (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36));
+        id = crypto.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36);
         await DataStore.set(ID_KEY, id);
     }
     return id;
@@ -33,23 +35,7 @@ async function getInstallId(): Promise<string> {
 async function ping() {
     try {
         const installId = await getInstallId();
-        await fetch(WEBHOOK, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                username: "MallCord",
-                embeds: [{
-                    title: "MallCord client online",
-                    color: 0xff71ce,
-                    description: "An anonymous MallCord client checked in.",
-                    fields: [
-                        { name: "Install", value: `\`${installId}\``, inline: true },
-                        { name: "Version", value: `\`${VERSION}\``, inline: true }
-                    ],
-                    timestamp: new Date().toISOString()
-                }]
-            })
-        });
+        await Native.sendHeartbeat(installId, VERSION);
     } catch (err) {
         logger.error("Heartbeat failed", err);
     }
