@@ -2,10 +2,9 @@
  * Vencord, a Discord client mod
  * Copyright (c) 2024 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Ported to MallCord from Nightcord (coll, viciouscal). Original authors
- * credited here; see https://git.nightcord.su/nightcord/nightcord
  */
+
+// Ported to MallCord from Nightcord (coll, viciouscal); see https://git.nightcord.su/nightcord/nightcord
 
 import { definePluginSettings } from "@api/Settings";
 import { MallCordDevs } from "@utils/constants";

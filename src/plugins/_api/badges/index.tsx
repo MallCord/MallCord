@@ -24,7 +24,7 @@ import { openContributorModal } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/discord";
 import { Logger } from "@utils/Logger";
-import { shouldShowContributorBadge, shouldShowMallCordContributorBadge } from "@utils/misc";
+import { shouldShowMallCordContributorBadge } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { ContextMenuApi, Menu, Toasts, UserStore } from "@webpack/common";
 
@@ -32,8 +32,7 @@ import Plugins, { PluginMeta } from "~plugins";
 
 import { MallCordDonorModal, MallCordTranslatorModal, VencordDonorModal } from "./modals";
 
-const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
-const MALLCORD_CONTRIBUTOR_BADGE = "https://iili.io/C3RNs5v.png";
+const MALLCORD_CONTRIBUTOR_BADGE = "https://iili.io/C3jZGrg.th.png";
 const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
 const MALLCORD_DEV_BADGE = "https://i.pinimg.com/736x/0d/7a/bd/0d7abdc86f81fff675983ca4e63d23a3.jpg";
 
@@ -49,15 +48,6 @@ const MallCordDevBadge: ProfileBadge = {
             transform: "scale(0.9)"
         }
     },
-};
-
-const ContributorBadge: ProfileBadge = {
-    id: "vencord_contributor_badge",
-    description: "Vencord Contributor",
-    iconSrc: CONTRIBUTOR_BADGE,
-    position: BadgePosition.START,
-    shouldShow: ({ userId }) => shouldShowContributorBadge(userId),
-    onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId))
 };
 
 const MallCordContributorBadge: ProfileBadge = {
@@ -97,7 +87,7 @@ const UserPluginContributorBadge: ProfileBadge = {
     },
 };
 
-let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
+const DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 let MallCordDonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 
 async function loadBadges(url: string, noCache = false) {
@@ -108,10 +98,8 @@ async function loadBadges(url: string, noCache = false) {
 }
 
 async function loadAllBadges(noCache = false) {
-    const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
+    // MallCord doesn't show Vencord donor badges; only load MallCord's set.
     const mallcordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
-
-    DonorBadges = vencordBadges;
     MallCordDonorBadges = mallcordBadges;
 }
 
@@ -195,7 +183,7 @@ export default definePlugin({
         }
     },
 
-    userProfileBadges: [MallCordDevBadge, ContributorBadge, MallCordContributorBadge, UserPluginContributorBadge],
+    userProfileBadges: [MallCordDevBadge, MallCordContributorBadge, UserPluginContributorBadge],
 
     async start() {
         await loadAllBadges();

@@ -105,7 +105,6 @@ export function _getBadges(args: BadgeUserArgs) {
         }
     }
 
-    const donorBadges = BadgeAPIPlugin.getDonorBadges(args.userId);
     const mallcordDonorBadges = BadgeAPIPlugin.getMallCordDonorBadges(args.userId);
     const GlobalBadges = isPluginEnabled(globalBadges.name) ? globalBadges.getGlobalBadges(args.userId) : false;
 
@@ -113,15 +112,6 @@ export function _getBadges(args: BadgeUserArgs) {
     if (GlobalBadges) {
         badges.unshift(
             ...GlobalBadges.map(badge => ({
-                ...args,
-                ...badge,
-            }))
-        );
-    }
-
-    if (donorBadges) {
-        badges.unshift(
-            ...donorBadges.map(badge => ({
                 ...args,
                 ...badge,
             }))
