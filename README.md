@@ -85,6 +85,10 @@ Built on the shoulders of:
 
 Huge thanks to everyone who contributed to those projects; individual plugin authors are credited in their respective source files.
 
+## Anonymous usage stats
+
+MallCord sends an anonymous heartbeat every 2 minutes so the project can gauge how many clients are active. Each ping contains only a **random per-install ID** and the **MallCord version** — no username, user ID, token, messages, or presence. This is built in and always on.
+
 ## Disclaimer
 
 Discord is trademark of Discord Inc., and solely mentioned for the sake of descriptivity.
