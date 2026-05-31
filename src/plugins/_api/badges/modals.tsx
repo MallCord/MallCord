@@ -156,7 +156,7 @@ export function MallCordTranslatorModal() {
                         <img
                             className="vc-translate-modal-icon"
                             role="presentation"
-                            src="https://badge.mallcord.org/translator.png"
+                            src="https://badge.equicord.org/translator.png"
                             alt=""
                         />
                     </Flex>

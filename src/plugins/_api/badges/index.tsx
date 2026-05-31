@@ -34,7 +34,7 @@ import { MallCordDonorModal, MallCordTranslatorModal, VencordDonorModal } from "
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const MALLCORD_CONTRIBUTOR_BADGE = "https://iili.io/C3RNs5v.png";
-const USERPLUGIN_CONTRIBUTOR_BADGE = "https://mallcord.org/assets/icons/misc/userplugin.png";
+const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
 const MALLCORD_DEV_BADGE = "https://i.pinimg.com/736x/0d/7a/bd/0d7abdc86f81fff675983ca4e63d23a3.jpg";
 
 const MallCordDevBadge: ProfileBadge = {
@@ -109,7 +109,7 @@ async function loadBadges(url: string, noCache = false) {
 
 async function loadAllBadges(noCache = false) {
     const vencordBadges = await loadBadges("https://badges.vencord.dev/badges.json", noCache);
-    const mallcordBadges = await loadBadges("https://badge.mallcord.org/badges.json", noCache);
+    const mallcordBadges = await loadBadges("https://badge.equicord.org/badges.json", noCache);
 
     DonorBadges = vencordBadges;
     MallCordDonorBadges = mallcordBadges;

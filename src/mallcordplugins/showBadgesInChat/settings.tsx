@@ -93,8 +93,8 @@ export default settings;
 
 const BadgeSettings = () => {
     const [images, setImages] = useState([
-        { src: "https://badge.mallcord.org/donor.webp", shown: settings.store.showMallCordDonor, title: "MallCord donor badges", key: "MallCordDonor", position: settings.store.MallCordDonorPosition },
-        { src: "https://mallcord.org/assets/favicon.png", shown: settings.store.showMallCordContributor, title: "MallCord contributor badge", key: "MallCordContributer", position: settings.store.MallCordContributorPosition },
+        { src: "https://badge.equicord.org/donor.webp", shown: settings.store.showMallCordDonor, title: "MallCord donor badges", key: "MallCordDonor", position: settings.store.MallCordDonorPosition },
+        { src: "https://equicord.org/assets/favicon.png", shown: settings.store.showMallCordContributor, title: "MallCord contributor badge", key: "MallCordContributer", position: settings.store.MallCordContributorPosition },
         { src: "https://cdn.discordapp.com/emojis/1026533070955872337.png", shown: settings.store.showVencordDonor, title: "Vencord donor badges", key: "VencordDonor", position: settings.store.VencordDonorPosition },
         { src: "https://cdn.discordapp.com/emojis/1092089799109775453.png", shown: settings.store.showVencordContributor, title: "Vencord contributor badge", key: "VencordContributer", position: settings.store.VencordContributorPosition },
         { src: "https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png", shown: settings.store.showDiscordProfile, title: "Discord profile badges (HypeSquad, Discord Staff, Early Supporter, etc.)", key: "DiscordProfile", position: settings.store.DiscordProfilePosition },

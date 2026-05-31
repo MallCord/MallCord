@@ -302,8 +302,8 @@ function DevBuildConfirmModal(props: RenderModalProps) {
                 <Paragraph>You are using a custom build of MallCord, which we do not provide support for!</Paragraph>
 
                 <Paragraph className={Margins.top8}>
-                    We only provide support for <Link href="https://mallcord.org/download">official builds</Link>.
-                    Either <Link href="https://mallcord.org/download">switch to an official build</Link> or figure your issue out yourself.
+                    We only provide support for <Link href="https://equicord.org/download">official builds</Link>.
+                    Either <Link href="https://equicord.org/download">switch to an official build</Link> or figure your issue out yourself.
                 </Paragraph>
 
                 <Text variant="text-md/bold" className={Margins.top8}>You will be banned from receiving support if you ignore this rule.</Text>
@@ -413,7 +413,7 @@ export default definePlugin({
                         <div>
                             <Paragraph>You are using an externally updated MallCord version, which we do not provide support for!</Paragraph>
                             <Paragraph className={Margins.top8}>
-                                Please either switch to an <Link href="https://mallcord.org/download">officially supported version of MallCord</Link>, or
+                                Please either switch to an <Link href="https://equicord.org/download">officially supported version of MallCord</Link>, or
                                 contact your package maintainer for support instead.
                             </Paragraph>
                         </div>

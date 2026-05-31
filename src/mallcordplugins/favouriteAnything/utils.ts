@@ -96,7 +96,7 @@ export const defs = defineItems({
 });
 
 // TODO: make thumbnails prettier
-const fallbackThumbnail = new URL("https://images-ext-1.discordapp.net/external/pGTJg3YdSHpyGTltH4vZUKEyQoNzf5mtqbSJs7I4ebc/https/mallcord.org/assets/plugins/favoriteAnything/invalid.png");
+const fallbackThumbnail = new URL("https://images-ext-1.discordapp.net/external/pGTJg3YdSHpyGTltH4vZUKEyQoNzf5mtqbSJs7I4ebc/https/equicord.org/assets/plugins/favoriteAnything/invalid.png");
 
 export async function getThumbnailUrl(data: string, width: number, height: number): Promise<URL | null> {
     try {

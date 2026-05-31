@@ -72,7 +72,7 @@ export function TranslateButton({
     className,
     ...props
 }: Partial<ButtonProps>) {
-    const link = "https://weblate.mallcord.org/projects/mallcord/";
+    const link = "https://weblate.equicord.org/projects/mallcord/";
     return (
         <Button
             {...props}

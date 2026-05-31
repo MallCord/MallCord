@@ -511,7 +511,7 @@ function ThemesTab() {
     function changeThemeLibraryURLs() {
         settings.themeLinks = settings.themeLinks.map(link => {
             if (link.startsWith("https://discord-themes.com/api")) {
-                return link.replace("https://discord-themes.com/api", "https://themes.mallcord.org/api");
+                return link.replace("https://discord-themes.com/api", "https://themes.equicord.org/api");
             }
             return link;
         });
