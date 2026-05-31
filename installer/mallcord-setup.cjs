@@ -14,7 +14,7 @@ const path = require("path");
 const readline = require("readline");
 const { execSync } = require("child_process");
 
-const REPO = "unfamiliardev/MallCord";
+const REPO = "MallCord/MallCord";
 const ASAR_URL = `https://github.com/${REPO}/releases/latest/download/desktop.asar`;
 const DATA_DIR = path.join(process.env.LOCALAPPDATA || os.homedir(), "MallCord");
 const ASAR_PATH = path.join(DATA_DIR, "desktop.asar");

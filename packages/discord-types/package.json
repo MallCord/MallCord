@@ -9,7 +9,7 @@
     "type": "module",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/unfamiliardev/MallCord.git",
+        "url": "git+https://github.com/MallCord/MallCord.git",
         "directory": "packages/discord-types"
     },
     "dependencies": {

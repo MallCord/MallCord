@@ -3,13 +3,13 @@
     "private": "true",
     "version": "0.1b",
     "description": "A vaporwave-inspired Discord client mod",
-    "homepage": "https://github.com/unfamiliardev/MallCord#readme",
+    "homepage": "https://github.com/MallCord/MallCord#readme",
     "bugs": {
-        "url": "https://github.com/unfamiliardev/MallCord/issues"
+        "url": "https://github.com/MallCord/MallCord/issues"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/unfamiliardev/MallCord.git"
+        "url": "git+https://github.com/MallCord/MallCord.git"
     },
     "license": "GPL-3.0-or-later",
     "author": "unfamiliardev",

@@ -145,7 +145,7 @@ async function generateDebugInfoMessage() {
 
     const info = {
         MallCord:
-            `v${VERSION} • [${gitHashShort}](<https://github.com/unfamiliardev/MallCord/commit/${gitHash}>)` +
+            `v${VERSION} • [${gitHashShort}](<https://github.com/MallCord/MallCord/commit/${gitHash}>)` +
             `${IS_EQUIBOP ? "" : SettingsPlugin.getVersionInfo()} - ${Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
         Client: `${RELEASE_CHANNEL} ~ ${clientString}`,
         Platform: platformDisplay

@@ -109,7 +109,7 @@ export const EXTENSIONS_CATALOG: ExtensionDefinition[] = [
 
 export const extensionDefinitionsById = new Map(EXTENSIONS_CATALOG.map(extension => [extension.id, extension]));
 
-export const MALLCORD_REPOSITORY_BLOB_BASE_URL = "https://github.com/unfamiliardev/MallCord/blob/main";
+export const MALLCORD_REPOSITORY_BLOB_BASE_URL = "https://github.com/MallCord/MallCord/blob/main";
 
 export function normalizeRepositoryPath(path: string): string {
     return path.trim().replace(/^\/+/, "");

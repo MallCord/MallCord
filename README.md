@@ -1,4 +1,4 @@
-# [<img src="https://iili.io/C3TD6bt.md.png" width="40" align="left" alt="MallCord">](https://github.com/unfamiliardev/MallCord) MallCord
+# [<img src="https://iili.io/C3TD6bt.md.png" width="40" align="left" alt="MallCord">](https://github.com/MallCord/MallCord) MallCord
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
 [![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
@@ -12,7 +12,7 @@
 
 > [!NOTE]
 > MallCord is brand new (v0.1b). There is no prebuilt installer yet — for now it builds from source (see below).
-> Prebuilt releases will land on the [Releases page](https://github.com/unfamiliardev/MallCord/releases) as the
+> Prebuilt releases will land on the [Releases page](https://github.com/MallCord/MallCord/releases) as the
 > project matures.
 
 ## Building MallCord from source
@@ -34,7 +34,7 @@ npm i -g pnpm
 Clone MallCord:
 
 ```shell
-git clone https://github.com/unfamiliardev/MallCord
+git clone https://github.com/MallCord/MallCord
 cd MallCord
 ```
 
