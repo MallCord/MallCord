@@ -81,6 +81,18 @@ function getResourcesDirs() {
                 tryDir(join(base, branch, "resources"));
             }
         }
+
+        // XDG config home — self-updating Discord on Linux stores versioned
+        // app dirs (app-X.Y.Z) directly under $XDG_CONFIG_HOME/<branch>/
+        const configHome = process.env.XDG_CONFIG_HOME || join(home, ".config");
+        for (const branch of ["discord", "discordcanary", "discordptb", "discorddevelopment"]) {
+            const branchDir = join(configHome, branch);
+            if (!existsSync(branchDir)) continue;
+            for (const name of readdirSync(branchDir)) {
+                if (!name.startsWith(VERSION_PREFIX)) continue;
+                tryDir(join(branchDir, name, "resources"));
+            }
+        }
     }
 
     return dirs;
