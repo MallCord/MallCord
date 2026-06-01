@@ -1345,10 +1345,6 @@ export const MallCordDevs = Object.freeze({
         name: "qdnx",
         id: 1374803023506702508n
     },
-    unfamiliardev: {
-        name: "unfamiliardev",
-        id: 0n
-    },
 } satisfies Record<string, Dev>);
 
 // iife so #__PURE__ works correctly
