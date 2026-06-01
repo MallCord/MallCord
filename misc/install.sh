@@ -1,124 +1,107 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# MallCord installer — clones, builds, and injects from source.
+# Usage: bash install.sh
+set -euo pipefail
 
-# Configuration
-INSTALLER_PATH="$HOME/.equilotl"
-GITHUB_URL="https://github.com/MallCord/Equilotl/releases/latest/download/EquilotlCli-Linux"
-PRIVILEGE_CMDS=("sudo" "doas")
-DEBUG=false
-LOG_FILE="$(dirname "$(realpath "$0")")/mallcordinstalldebug.log"
+REPO_URL="https://github.com/MallCord/MallCord"
+INSTALL_DIR="$HOME/MallCord"
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 
-# Debug logging
-debug_log() {
-    if $DEBUG; then
-        set -euo pipefail
-        local timestamp
-        timestamp=$(date +"%Y-%m-%d %T")
-        echo -e "[$timestamp] $1" | tee -a "$LOG_FILE"
-    fi
-}
+step() { echo -e "${CYAN}  =>${NC} $*"; }
+ok()   { echo -e "${GREEN}  OK${NC} $*"; }
+warn() { echo -e "${YELLOW}  !${NC}  $*"; }
+die()  { echo -e "\n${RED}  ERROR:${NC} $*\n" >&2; exit 1; }
+ask()  { echo -e -n "${YELLOW}  ?${NC}  $*"; }
 
-# Error handling
-error() {
-    echo -e "${RED}Error: $1${NC}" >&2
-    exit 1
-}
+echo -e "${BOLD}${CYAN}"
+echo "   __  ___      ____  ____  ____              __ "
+echo "  /  |/  /___ _/ / / / __ \/ __ \____  _____/ / "
+echo " / /|_/ / __  / / / / / / / / / / __ \/ ___/ /  "
+echo "/ /  / / /_/ / / / / /_/ / /_/ / / / / /  / /   "
+echo "/_/  /_/\__,_/_/_/  \____/\____/_/ /_/_/  \__/   "
+echo -e "${NC}"
 
-# Check for root
-check_root() {
-    if [ "$(id -u)" -eq 0 ]; then
-        error "This script should not be run as root. Please run as a normal user."
-    fi
-}
+[[ "$(id -u)" -ne 0 ]] || die "Do not run this script as root."
 
-# Download the installer
-download_installer() {
-    echo -e "${YELLOW}Downloading installer...${NC}"
-    if ! curl -sSL "$GITHUB_URL" --output "$INSTALLER_PATH"; then
-        error "Failed to download installer from GitHub"
-    fi
-    chmod +x "$INSTALLER_PATH" || error "Failed to make installer executable"
-}
+# ── Dependencies ──────────────────────────────────────────────────────────────
 
-# Check if installer needs update
-check_for_updates() {
-    if [ ! -f "$INSTALLER_PATH" ]; then
-        echo -e "${YELLOW}Installer not found. Downloading...${NC}"
-        download_installer
-        return
-    fi
+step "Checking dependencies..."
 
-    local latest_modified local_modified
-    if ! latest_modified=$(curl -sI "$GITHUB_URL" | grep -i "last-modified" | cut -d' ' -f2-); then
-        echo -e "${YELLOW}Warning: Could not fetch last modified date from GitHub. Using existing installer.${NC}"
-        return
-    fi
+command -v git >/dev/null 2>&1 \
+    || die "git not found.\n  Install it first: https://git-scm.com/downloads"
+ok "git $(git --version | awk '{print $3}')"
 
-    local_modified=$(stat -c "%y" "$INSTALLER_PATH" | cut -d' ' -f1-2) || error "Failed to get local modified date"
+command -v node >/dev/null 2>&1 \
+    || die "Node.js not found.\n  Install LTS from https://nodejs.org"
 
-    if [ "$local_modified" != "$latest_modified" ]; then
-        echo -e "${YELLOW}Installer is outdated. Do you wish to update? [y/n]${NC}"
-        read -p "" -n 1 -r retval
+NODE_MAJOR=$(node -e "console.log(parseInt(process.version.slice(1)))")
+[[ "$NODE_MAJOR" -ge 18 ]] \
+    || die "Node.js v18+ required. You have $(node --version).\n  Update at https://nodejs.org"
+ok "Node.js $(node --version)"
 
-        # Create a new line before printing our next notice, otherwise it will be printed on the same line
-        # that the prompt was created on!
-        echo ""
-        case "$retval" in
-            y|Y ) download_installer;;
-            n|N ) echo -e "${YELLOW}Update cancelled. Running installer...${NC}" && return;;
-        esac
+if ! command -v pnpm >/dev/null 2>&1; then
+    warn "pnpm not found. Installing globally via npm..."
+    npm install -g pnpm \
+        || die "Failed to install pnpm.\n  Try: sudo npm install -g pnpm"
+    # Make sure the npm global bin dir is in PATH this session
+    NPM_BIN="$(npm config get prefix)/bin"
+    export PATH="$NPM_BIN:$PATH"
+    command -v pnpm >/dev/null 2>&1 \
+        || die "pnpm installed but not in PATH.\n  Restart your terminal and re-run."
+fi
+ok "pnpm $(pnpm --version)"
+
+# ── Clone / update ────────────────────────────────────────────────────────────
+
+echo ""
+if [[ -d "$INSTALL_DIR/.git" ]]; then
+    warn "MallCord already found at $INSTALL_DIR."
+    ask "Update to the latest version? [y/N] "
+    read -r answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+        step "Pulling latest changes..."
+        git -C "$INSTALL_DIR" pull --ff-only \
+            || die "git pull failed.\n  Try deleting $INSTALL_DIR and re-running."
+        ok "Repository updated."
     else
-        echo -e "${GREEN}Installer is up-to-date.${NC}"
+        step "Skipping update — using existing checkout."
     fi
-}
+elif [[ -e "$INSTALL_DIR" ]]; then
+    die "$INSTALL_DIR exists but is not a git repo.\n  Remove it and re-run."
+else
+    step "Cloning MallCord into $INSTALL_DIR..."
+    git clone "$REPO_URL" "$INSTALL_DIR" \
+        || die "Clone failed. Check your internet connection."
+    ok "Cloned."
+fi
 
-# Find privilege escalation command
-find_privilege_cmd() {
-    for cmd in "${PRIVILEGE_CMDS[@]}"; do
-        if command -v "$cmd" >/dev/null; then
-            echo "$cmd"
-            return
-        fi
-    done
-    error "Neither sudo nor doas found. Please install one to proceed."
-}
+cd "$INSTALL_DIR"
 
-# Main execution
-main() {
-    # Check for debug flag
-    if [[ "${1:-}" == "-debug" ]]; then
-        DEBUG=true
-        > "$LOG_FILE" # Clear previous log
-        debug_log "Debug mode enabled"
-    fi
+# ── Install deps ──────────────────────────────────────────────────────────────
 
-    debug_log "Starting installation process"
-    check_root
-    check_for_updates
+echo ""
+step "Installing dependencies (this may take a minute)..."
+pnpm install --frozen-lockfile \
+    || die "pnpm install failed. See output above."
+ok "Dependencies installed."
 
-    local priv_cmd
-    priv_cmd=$(find_privilege_cmd)
-    debug_log "Using privilege command: $priv_cmd"
+# ── Build ─────────────────────────────────────────────────────────────────────
 
-    echo -e "${YELLOW}Running installer with $priv_cmd...${NC}"
-    debug_log "Executing installer: $priv_cmd $INSTALLER_PATH"
-    if ! "$priv_cmd" "$INSTALLER_PATH"; then
-        debug_log "Installer failed"
-        error "Installer failed to run"
-    fi
+echo ""
+step "Building MallCord..."
+pnpm build \
+    || die "Build failed. See output above."
+ok "Build complete."
 
-    debug_log "Installation completed successfully"
-    echo -e "\n${GREEN}Installation completed successfully!${NC}"
-    echo -e "\nCredits:"
-    echo "Original script forked from Vencord"
-    echo "Modified by PhoenixAceVFX for MallCord Updater"
-    echo "Rewrite by PhoenixAceVFX"
-}
+# ── Inject ────────────────────────────────────────────────────────────────────
 
-# Pass arguments to main
-main "$@"
+echo ""
+step "Injecting into Discord..."
+pnpm inject \
+    || die "Injection failed.\n  Make sure Discord is installed and you are not running as root."
+
+echo ""
+echo -e "${GREEN}${BOLD}  MallCord installed! Start Discord to load it.${NC}"
+echo ""
