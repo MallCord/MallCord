@@ -15,7 +15,24 @@
 > Prebuilt releases will land on the [Releases page](https://github.com/MallCord/MallCord/releases) as the
 > project matures.
 
-## Building MallCord from source
+## Installing MallCord
+
+### Quick install
+
+**Linux / macOS**
+```sh
+wget https://raw.githubusercontent.com/MallCord/MallCord/refs/heads/main/misc/install.sh && chmod +x install.sh && ./install.sh
+```
+
+**Windows** (PowerShell)
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MallCord/MallCord/main/misc/install.bat" -OutFile "install.bat"
+.\install.bat
+```
+
+The script checks all dependencies, clones the repo, builds, and injects into Discord automatically.
+
+### Manual install (build from source)
 
 Works on **Windows**, **macOS**, **Linux** and **BSD** — anything with Git, Node and the Discord desktop app. `pnpm inject` auto-detects your Discord install (Stable/PTB/Canary/Dev, including `/opt`, distro packages, `~/.local`, BSD `/usr/local`, Flatpak and Snap layouts).
 
