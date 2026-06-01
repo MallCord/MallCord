@@ -12,8 +12,9 @@
         "url": "git+https://github.com/MallCord/MallCord.git"
     },
     "license": "GPL-3.0-or-later",
-    "author": "unfamiliardev",
+    "author": "pepsify",
     "scripts": {
+        "prepare": "git config core.hooksPath .githooks || true",
         "build": "pnpm depCheck && node --require=./scripts/suppressExperimentalWarnings.js scripts/build/build.mjs",
         "buildStandalone": "pnpm build --standalone",
         "buildWeb": "pnpm depCheck && node --require=./scripts/suppressExperimentalWarnings.js scripts/build/buildWeb.mjs",

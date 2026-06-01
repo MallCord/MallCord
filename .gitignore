@@ -40,3 +40,8 @@ ExtensionCache/
 mallcord-setup.exe
 installer/sea-prep.blob
 installer/sea-config.json
+
+# AI assistant context files
+CLAUDE.md
+AGENTS.md
+GEMINI.md

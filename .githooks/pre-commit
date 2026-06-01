@@ -1,0 +1,9 @@
+#!/bin/sh
+# Block AI assistant context files from being staged.
+BLOCKED="CLAUDE.md AGENTS.md GEMINI.md"
+for f in $BLOCKED; do
+    if git diff --cached --name-only | grep -qx "$f"; then
+        echo "pre-commit: refusing to commit $f"
+        git restore --staged "$f" 2>/dev/null || true
+    fi
+done
