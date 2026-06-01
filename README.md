@@ -24,11 +24,7 @@
 wget https://raw.githubusercontent.com/MallCord/MallCord/refs/heads/main/misc/install.sh && chmod +x install.sh && ./install.sh
 ```
 
-**Windows** (PowerShell)
-```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MallCord/MallCord/main/misc/install.bat" -OutFile "install.bat"
-.\install.bat
-```
+**Windows** — download `install.bat` from the [Releases page](https://github.com/MallCord/MallCord/releases) and run it.
 
 The script checks all dependencies, clones the repo, builds, and injects into Discord automatically.
 
