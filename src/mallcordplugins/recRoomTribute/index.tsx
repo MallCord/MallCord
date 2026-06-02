@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import * as DataStore from "@api/DataStore";
+import { get as dsGet, set as dsSet } from "@api/DataStore";
 import { MallCordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { React, showToast, Toasts } from "@webpack/common";
@@ -39,9 +39,9 @@ export default definePlugin({
     },
 
     async start() {
-        const shown = await DataStore.get<boolean>(SEEN_KEY);
+        const shown = await dsGet<boolean>(SEEN_KEY);
         if (shown) return;
-        await DataStore.set(SEEN_KEY, true);
+        await dsSet(SEEN_KEY, true);
 
         setTimeout(() => {
             showToast(
