@@ -10,11 +10,6 @@
 [Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
-> [!NOTE]
-> MallCord is brand new (v0.1b). There is no prebuilt installer yet — for now it builds from source (see below).
-> Prebuilt releases will land on the [Releases page](https://github.com/MallCord/MallCord/releases) as the
-> project matures.
-
 ## Installing MallCord
 
 ### Quick install
@@ -24,8 +19,10 @@
 wget https://raw.githubusercontent.com/MallCord/MallCord/refs/heads/main/misc/install.sh && chmod +x install.sh && ./install.sh
 ```
 
-**Windows** — download `install.bat` from the [Releases page](https://github.com/MallCord/MallCord/releases) and run it.
-
+**Windows** — 
+```sh
+irm "https://raw.githubusercontent.com/MallCord/MallCord/main/misc/install.bat" -OutFile install.bat; .\install.bat
+```
 The script checks all dependencies, clones the repo, builds, and injects into Discord automatically.
 
 ### Manual install (build from source)
