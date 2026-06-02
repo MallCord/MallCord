@@ -109,11 +109,15 @@ if exist "%INSTALL_DIR%\.git" (
 )
 
 cd /d "%INSTALL_DIR%"
+if %errorlevel% neq 0 (
+    echo   ERROR: Could not enter %INSTALL_DIR%.
+    goto :fail
+)
 
 :: ── Install dependencies ──────────────────────────────────────────────────────
 echo.
 echo   Installing dependencies (this may take a minute)...
-call pnpm install --frozen-lockfile
+call pnpm --dir "%INSTALL_DIR%" install --frozen-lockfile
 if %errorlevel% neq 0 (
     echo   ERROR: pnpm install failed. See output above.
     goto :fail
@@ -123,7 +127,7 @@ echo   [OK] Dependencies installed.
 :: ── Build ─────────────────────────────────────────────────────────────────────
 echo.
 echo   Building MallCord...
-call pnpm build
+call pnpm --dir "%INSTALL_DIR%" build
 if %errorlevel% neq 0 (
     echo   ERROR: Build failed. See output above.
     goto :fail
@@ -133,7 +137,7 @@ echo   [OK] Build complete.
 :: ── Inject ────────────────────────────────────────────────────────────────────
 echo.
 echo   Injecting into Discord...
-call pnpm inject
+call pnpm --dir "%INSTALL_DIR%" inject
 if %errorlevel% neq 0 (
     echo   ERROR: Injection failed. Make sure Discord is installed.
     goto :fail
