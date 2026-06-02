@@ -26,16 +26,13 @@ import { classNameFactory } from "@utils/css";
 import { Margins } from "@utils/margins";
 import { isAnyPluginDev } from "@utils/misc";
 import { relaunch } from "@utils/native";
-import { Alerts, GuildMemberStore, React, useMemo, UserStore } from "@webpack/common";
+import { Alerts, GuildMemberStore, React, UserStore } from "@webpack/common";
 
 import { DonateButtonComponent } from "./DonateButton";
 import { MacOSVibrancySettings } from "./MacVibrancySettings";
 import { NotificationSection } from "./NotificationSettings";
 import { VaporwaveSettings } from "./VaporwaveSettings";
 import { WindowsMaterialSettings } from "./WindowsMaterialSettings";
-
-const DEFAULT_DONATE_IMAGE = "https://cdn.discordapp.com/emojis/1026533090627174460.png";
-const SHIGGY_DONATE_IMAGE = "https://equicord.org/assets/favicon.png";
 
 const VENNIE_DONATOR_IMAGE = "https://cdn.discordapp.com/emojis/1238120638020063377.png";
 const COZY_CONTRIB_IMAGE = "https://cdn.discordapp.com/emojis/1026533070955872337.png";
@@ -162,41 +159,26 @@ function Switches() {
 }
 
 function MallCordSettings() {
-    const donateImage = useMemo(() =>
-        Math.random() > 0.5 ? DEFAULT_DONATE_IMAGE : SHIGGY_DONATE_IMAGE,
-        []
-    );
-
     const user = UserStore?.getCurrentUser();
 
     return (
         <SettingsTab>
-            {(isMallCordDonor(user?.id) || isVencordDonor(user?.id)) ? (
+            {(isMallCordDonor(user?.id) || isVencordDonor(user?.id)) && (
                 <SpecialCard
                     title="Donations"
                     subtitle="Thank you for donating!"
                     description={
                         isMallCordDonor(user?.id) && isVencordDonor(user?.id)
-                            ? "All Vencord users can see your Vencord donor badge, and MallCord users can see your MallCord donor badge. To change your Vencord donor badge, contact @vending.machine. For your MallCord donor badge, make a ticket in MallCord's server."
+                            ? "All Vencord users can see your Vencord donor badge, and MallCord users can see your Equicord donor badge. To change your Vencord donor badge, contact @vending.machine."
                             : isVencordDonor(user?.id)
                                 ? "All Vencord users can see your badge! You can manage your perks by messaging @vending.machine."
-                                : "All MallCord users can see your badge! You can manage your perks by making a ticket in MallCord's server."
+                                : "You have an Equicord donor badge visible to all MallCord users."
                     }
                     cardImage={VENNIE_DONATOR_IMAGE}
                     backgroundImage={DONOR_BACKGROUND_IMAGE}
                     backgroundColor="#ED87A9"
                 >
                     <DonateButtonComponent donated={true} />
-                </SpecialCard>
-            ) : (
-                <SpecialCard
-                    title="Support the Project"
-                    description="Please consider supporting the development of MallCord by donating!"
-                    cardImage={donateImage}
-                    backgroundImage={DONOR_BACKGROUND_IMAGE}
-                    backgroundColor="#c3a3ce"
-                >
-                    <DonateButtonComponent />
                 </SpecialCard>
             )}
             {isAnyPluginDev(user?.id) && (
