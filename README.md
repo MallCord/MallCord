@@ -25,7 +25,9 @@ wget https://raw.githubusercontent.com/MallCord/MallCord/refs/heads/main/misc/in
 ```
 
 **Windows** — 
+```sh
 irm "https://raw.githubusercontent.com/MallCord/MallCord/main/misc/install.bat" -OutFile install.bat; .\install.bat
+```
 The script checks all dependencies, clones the repo, builds, and injects into Discord automatically.
 
 ### Manual install (build from source)
