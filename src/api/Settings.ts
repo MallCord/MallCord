@@ -43,8 +43,6 @@ export interface Settings {
     autoUpdate: boolean;
     autoUpdateNotification: boolean;
     useQuickCss: boolean;
-    vaporwaveTheme: boolean;
-    vaporwavePalette: string;
     eagerPatches: boolean;
     enabledThemes: string[];
     enabledThemeLinks: string[];
@@ -108,8 +106,6 @@ const DefaultSettings: Settings = {
     autoUpdate: true,
     autoUpdateNotification: true,
     useQuickCss: true,
-    vaporwaveTheme: false,
-    vaporwavePalette: "classic",
     themeLinks: [],
     eagerPatches: false, // Eagerly patching no longer works due to module factories with the same id being able to have different sources now.
     enabledThemes: [],

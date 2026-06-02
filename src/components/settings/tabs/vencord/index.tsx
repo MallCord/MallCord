@@ -31,7 +31,6 @@ import { Alerts, GuildMemberStore, React, UserStore } from "@webpack/common";
 import { DonateButtonComponent } from "./DonateButton";
 import { MacOSVibrancySettings } from "./MacVibrancySettings";
 import { NotificationSection } from "./NotificationSettings";
-import { VaporwaveSettings } from "./VaporwaveSettings";
 import { WindowsMaterialSettings } from "./WindowsMaterialSettings";
 
 const VENNIE_DONATOR_IMAGE = "https://cdn.discordapp.com/emojis/1238120638020063377.png";
@@ -47,14 +46,9 @@ type KeysOfType<Object, Type> = {
 }[keyof Object];
 
 function Switches() {
-    const settings = useSettings(["vaporwaveTheme", "useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
+    const settings = useSettings(["useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
 
     const Switches = [
-        {
-            key: "vaporwaveTheme",
-            title: "Vaporwave Theme",
-            description: "Skin Discord in MallCord's signature vaporwave look — neon pink/cyan/purple, glow accents, and a retro grid. Toggles instantly, no restart needed.",
-        },
         {
             key: "useQuickCss",
             title: "Enable Custom CSS",
@@ -262,8 +256,6 @@ function MallCordSettings() {
             </Notice.Info>
 
             <Switches />
-
-            <VaporwaveSettings />
 
             <MacOSVibrancySettings />
             <WindowsMaterialSettings />

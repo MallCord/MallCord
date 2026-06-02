@@ -20,7 +20,6 @@
 import "~plugins";
 import "./fixWeirdAppRegionBug.css";
 
-import vaporwaveStyle from "./vaporwave.css?managed";
 
 export * as Api from "./api";
 export * as Plugins from "./api/PluginManager";
@@ -31,16 +30,15 @@ export * as Webpack from "./webpack";
 export * as WebpackPatcher from "./webpack/patchWebpack";
 export { PlainSettings, Settings };
 
-import { coreStyleRootNode, disableStyle, enableStyle, initStyles } from "@api/Styles";
+import { coreStyleRootNode, initStyles } from "@api/Styles";
 import { openSettingsTabModal, UpdaterTab } from "@components/settings";
 import { IS_WINDOWS } from "@utils/constants";
 import { createAndAppendStyle } from "@utils/css";
 import { StartAt } from "@utils/types";
-import { paletteToCss } from "@utils/vaporwavePalettes";
 import { popNotice, showNotice } from "./api/Notices";
 import { NotificationData, showNotification } from "./api/Notifications";
 import { initPluginManager, PMLogger, startAllPlugins } from "./api/PluginManager";
-import { PlainSettings, Settings, SettingsStore } from "./api/Settings";
+import { PlainSettings, Settings } from "./api/Settings";
 import { relaunch } from "./utils/native";
 import { checkForUpdates, isOutdated as getIsOutdated, update, UpdateLogger } from "./utils/updater";
 import { onceReady } from "./webpack";
@@ -159,23 +157,8 @@ async function init() {
     }
 }
 
-let vaporwavePaletteNode: HTMLStyleElement | null = null;
-function applyVaporwaveTheme() {
-    if (Settings.vaporwaveTheme) {
-        enableStyle(vaporwaveStyle);
-        vaporwavePaletteNode ??= createAndAppendStyle("mallcord-vaporwave-palette", coreStyleRootNode);
-        vaporwavePaletteNode.textContent = paletteToCss(Settings.vaporwavePalette);
-    } else {
-        disableStyle(vaporwaveStyle);
-        if (vaporwavePaletteNode) vaporwavePaletteNode.textContent = "";
-    }
-}
-
 initPluginManager();
 initStyles();
-applyVaporwaveTheme();
-SettingsStore.addChangeListener("vaporwaveTheme", applyVaporwaveTheme);
-SettingsStore.addChangeListener("vaporwavePalette", applyVaporwaveTheme);
 startAllPlugins(StartAt.Init);
 init();
 
