@@ -10,11 +10,6 @@
 [Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
-> [!NOTE]
-> MallCord is brand new (v0.1b). There is no prebuilt installer yet — for now it builds from source (see below).
-> Prebuilt releases will land on the [Releases page](https://github.com/MallCord/MallCord/releases) as the
-> project matures.
-
 ## Installing MallCord
 
 ### Quick install
