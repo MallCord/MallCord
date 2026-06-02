@@ -75,7 +75,6 @@ export function MallCordDonorModal() {
     openModal(props => (
         <ErrorBoundary noop onError={() => {
             props.onClose();
-            VencordNative.native.openExternal("https://github.com/sponsors/thororen1234");
         }}>
             <Modal
                 {...props}
@@ -90,7 +89,7 @@ export function MallCordDonorModal() {
                     >
                         <Flex justifyContent="center" alignItems="center" gap="0.5em">
                             <Heart />
-                            MallCord Donor
+                            Equicord Donor
                         </Flex>
                     </Heading>
                 }
@@ -112,20 +111,15 @@ export function MallCordDonorModal() {
                     </Flex>
                     <div style={{ padding: "1em" }}>
                         <Paragraph>
-                            This Badge is a special perk for MallCord (Not Vencord) Donors
+                            This badge is a special perk for Equicord Donors.
                         </Paragraph>
                         <Paragraph className={Margins.top20}>
-                            Please consider supporting the development of MallCord by becoming a donor. It would mean a lot! :3
+                            Thank you for supporting Equicord!
                         </Paragraph>
                     </div>
                 </div>
-                <div>
-                    <Flex justifyContent="center" style={{ width: "100%" }}>
-                        <DonateButton mallcord={true} />
-                    </Flex>
-                </div>
             </Modal>
-        </ErrorBoundary >
+        </ErrorBoundary>
     ));
 }
 
