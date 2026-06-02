@@ -39,7 +39,7 @@ function addSearchItems(children: React.ReactNode[], props: Record<string, unkno
 export default definePlugin({
     name: "ImageSearch",
     description: "Adds a 'Search Image' submenu to image context menus with Google Lens, Yandex, SauceNAO, and TinEye.",
-    tags: ["Utility", "Images"],
+    tags: ["Utility", "Media"],
     authors: [MallCordDevs.pepsify],
 
     contextMenus: {

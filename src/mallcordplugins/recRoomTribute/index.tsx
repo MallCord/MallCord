@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { DataStore } from "@api/DataStore";
+import * as DataStore from "@api/DataStore";
 import { MallCordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { React, showToast, Toasts } from "@webpack/common";
