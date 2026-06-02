@@ -137,7 +137,7 @@ echo   [OK] Build complete.
 :: ── Inject ────────────────────────────────────────────────────────────────────
 echo.
 echo   Injecting into Discord...
-call pnpm --dir "%INSTALL_DIR%" inject
+call node "%INSTALL_DIR%\scripts\runInstaller.mjs" -- --install
 if %errorlevel% neq 0 (
     echo   ERROR: Injection failed. Make sure Discord is installed.
     goto :fail
