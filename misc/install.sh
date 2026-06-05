@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MallCord installer — clones, builds, and injects from source.
+# MallCord installer / uninstaller
 # Usage: bash install.sh
 set -euo pipefail
 
@@ -25,7 +25,52 @@ echo -e "${NC}"
 
 [[ "$(id -u)" -ne 0 ]] || die "Do not run this script as root."
 
-# ── Dependencies ──────────────────────────────────────────────────────────────
+# ── Mode selection ────────────────────────────────────────────────────────────
+echo -e "  What would you like to do?"
+echo -e "  ${CYAN}[1]${NC} Install / Update MallCord"
+echo -e "  ${CYAN}[2]${NC} Uninstall MallCord"
+echo
+ask "Choose an option [1/2]: "
+read -r MODE_CHOICE
+echo
+
+if [[ "$MODE_CHOICE" == "2" ]]; then
+    # ══════════════════════════════════════════════════════════
+    #  UNINSTALL
+    # ══════════════════════════════════════════════════════════
+    [[ -d "$INSTALL_DIR/.git" ]] || die "MallCord not found at $INSTALL_DIR. Nothing to uninstall."
+
+    step "Found MallCord at $INSTALL_DIR."
+    echo
+
+    step "Removing MallCord from Discord..."
+    node "$INSTALL_DIR/scripts/runInstaller.mjs" -- --uninstall \
+        || warn "Uninject step reported an error. Discord may already be uninjected."
+    ok "MallCord removed from Discord."
+
+    echo
+    ask "Also delete the MallCord folder at $INSTALL_DIR? [y/N] "
+    read -r DEL_CHOICE
+    echo
+    if [[ "$DEL_CHOICE" =~ ^[Yy]$ ]]; then
+        step "Deleting $INSTALL_DIR..."
+        rm -rf "$INSTALL_DIR"
+        ok "Folder deleted."
+    else
+        ok "Kept folder — run this script again to reinstall."
+    fi
+
+    echo
+    echo -e "${GREEN}${BOLD}  ============================================"
+    echo "    MallCord uninstalled. Restart Discord."
+    echo -e "  ============================================${NC}"
+    echo
+    exit 0
+fi
+
+# ══════════════════════════════════════════════════════════
+#  INSTALL
+# ══════════════════════════════════════════════════════════
 
 step "Checking dependencies..."
 
@@ -45,15 +90,12 @@ if ! command -v pnpm >/dev/null 2>&1; then
     warn "pnpm not found. Installing globally via npm..."
     npm install -g pnpm \
         || die "Failed to install pnpm.\n  Try: sudo npm install -g pnpm"
-    # Make sure the npm global bin dir is in PATH this session
     NPM_BIN="$(npm config get prefix)/bin"
     export PATH="$NPM_BIN:$PATH"
     command -v pnpm >/dev/null 2>&1 \
         || die "pnpm installed but not in PATH.\n  Restart your terminal and re-run."
 fi
 ok "pnpm $(pnpm --version)"
-
-# ── Clone / update ────────────────────────────────────────────────────────────
 
 echo ""
 if [[ -d "$INSTALL_DIR/.git" ]]; then
@@ -79,15 +121,11 @@ fi
 
 cd "$INSTALL_DIR"
 
-# ── Install deps ──────────────────────────────────────────────────────────────
-
 echo ""
 step "Installing dependencies (this may take a minute)..."
 pnpm install --frozen-lockfile \
     || die "pnpm install failed. See output above."
 ok "Dependencies installed."
-
-# ── Build ─────────────────────────────────────────────────────────────────────
 
 echo ""
 step "Building MallCord..."
@@ -95,11 +133,9 @@ pnpm build \
     || die "Build failed. See output above."
 ok "Build complete."
 
-# ── Inject ────────────────────────────────────────────────────────────────────
-
 echo ""
 step "Injecting into Discord..."
-pnpm inject \
+node "$INSTALL_DIR/scripts/runInstaller.mjs" -- --install \
     || die "Injection failed.\n  Make sure Discord is installed and you are not running as root."
 
 echo ""

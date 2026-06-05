@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: MallCord installer — clones, builds, and injects from source.
+:: MallCord installer / uninstaller
 :: Run as a normal user (NOT as Administrator).
 
 set REPO_URL=https://github.com/MallCord/MallCord
@@ -9,8 +9,17 @@ set INSTALL_DIR=%USERPROFILE%\MallCord
 
 echo.
 echo   +---------------------------------+
-echo   ^|       MallCord Installer        ^|
+echo   ^|         MallCord Setup          ^|
 echo   +---------------------------------+
+echo.
+
+:: ── Mode selection ────────────────────────────────────────────────────────────
+echo   What would you like to do?
+echo   [1] Install / Update MallCord
+echo   [2] Uninstall MallCord
+echo.
+choice /C 12 /M "   Choose an option"
+set MODE_CHOICE=!errorlevel!
 echo.
 
 :: ── Warn if running as administrator ─────────────────────────────────────────
@@ -27,6 +36,12 @@ if !errorlevel! equ 0 (
         goto :end
     )
 )
+
+if !MODE_CHOICE! equ 2 goto :uninstall
+
+:: ════════════════════════════════════════════════════════════
+::  INSTALL
+:: ════════════════════════════════════════════════════════════
 
 :: ── Check git ─────────────────────────────────────────────────────────────────
 where git >nul 2>&1
@@ -64,7 +79,6 @@ if %errorlevel% neq 0 (
         echo   ERROR: Failed to install pnpm.
         goto :fail
     )
-    :: Add npm global prefix to PATH for this session
     for /f "tokens=*" %%p in ('npm config get prefix 2^>nul') do set PATH=%%p;!PATH!
     where pnpm >nul 2>&1
     if %errorlevel% neq 0 (
@@ -150,9 +164,48 @@ echo   ============================================
 echo.
 goto :end
 
+:: ════════════════════════════════════════════════════════════
+::  UNINSTALL
+:: ════════════════════════════════════════════════════════════
+:uninstall
+
+if not exist "%INSTALL_DIR%\.git" (
+    echo   ERROR: MallCord not found at %INSTALL_DIR%. Nothing to uninstall.
+    goto :fail
+)
+
+echo   Found MallCord at %INSTALL_DIR%.
+echo.
+
+echo   Removing MallCord from Discord...
+call node "%INSTALL_DIR%\scripts\runInstaller.mjs" -- --uninstall
+if %errorlevel% neq 0 (
+    echo   WARNING: Uninject step reported an error. Discord may already be uninjected.
+)
+echo   [OK] MallCord removed from Discord.
+
+echo.
+choice /C YN /M "   Also delete the MallCord folder at %INSTALL_DIR%"
+set DEL_CHOICE=!errorlevel!
+echo.
+if !DEL_CHOICE! equ 1 (
+    echo   Deleting %INSTALL_DIR%...
+    rmdir /s /q "%INSTALL_DIR%"
+    echo   [OK] Folder deleted.
+) else (
+    echo   Kept folder — run this script again to reinstall.
+)
+
+echo.
+echo   ============================================
+echo     MallCord uninstalled. Restart Discord.
+echo   ============================================
+echo.
+goto :end
+
 :fail
 echo.
-echo   Installation failed. See errors above.
+echo   Failed. See errors above.
 echo.
 
 :end
