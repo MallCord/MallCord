@@ -58,10 +58,18 @@ function parseLrc(lrc: string): SyncedLine[] {
     return lines.sort((a, b) => a.time - b.time);
 }
 
+// Strip suffixes like "- 2012 Remaster", "(Remastered)", "- Live", etc. that break LrcLib lookups
+function cleanTrackName(name: string): string {
+    return name
+        .replace(/\s*[-–([\s]+(?:remaster(?:ed)?|remix|live|version|edit|radio edit|acoustic|demo|instrumental|extended|deluxe|anniversary|original mix)\b.*/i, "")
+        .trim();
+}
+
 async function fetchLyrics(track: string, artist: string, id: string): Promise<SyncedLine[] | null> {
     if (lyricsCache.has(id)) return lyricsCache.get(id) ?? null;
+    const cleanedTrack = cleanTrackName(track);
     try {
-        const res = await fetch(`https://lrclib.net/api/get?${new URLSearchParams({ track_name: track, artist_name: artist })}`);
+        const res = await fetch(`https://lrclib.net/api/get?${new URLSearchParams({ track_name: cleanedTrack, artist_name: artist })}`);
         if (!res.ok) { lyricsCache.set(id, null); return null; }
         const data = await res.json() as { syncedLyrics?: string; };
         const lines = data.syncedLyrics ? parseLrc(data.syncedLyrics) : null;
