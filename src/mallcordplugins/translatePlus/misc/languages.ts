@@ -70,7 +70,6 @@ export const languages = {
     "tp": "Toki Pona",
     "sh": "Shavian",
     "fi": "Finnish",
-    "fr": "French",
     "fy": "Frisian",
     "gl": "Galician",
     "ka": "Georgian",

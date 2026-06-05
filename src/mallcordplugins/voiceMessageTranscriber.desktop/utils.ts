@@ -15,7 +15,6 @@ export const LANGUAGES = {
     es: "spanish/castilian",
     ru: "russian",
     ko: "korean",
-    fr: "french",
     ja: "japanese",
     pt: "portuguese",
     tr: "turkish",

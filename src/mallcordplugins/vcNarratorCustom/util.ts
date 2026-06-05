@@ -27,8 +27,6 @@ export const VOICE_OPTIONS = [
     { label: "English: US Male 2 (en_us_007)", value: "en_us_007" },
     { label: "English: US Male 3 (en_us_009)", value: "en_us_009" },
     { label: "English: US Male 4 (en_us_010)", value: "en_us_010" },
-    { label: "European: French Male 1 (fr_001)", value: "fr_001" },
-    { label: "European: French Male 2 (fr_002)", value: "fr_002" },
     { label: "European: German Female (de_001)", value: "de_001" },
     { label: "European: German Male (de_002)", value: "de_002" },
     { label: "European: Italian Male (it_male_m18)", value: "it_male_m18" },

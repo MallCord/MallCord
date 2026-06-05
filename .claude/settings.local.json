@@ -12,7 +12,10 @@
       "Bash(awk 'NR>=660 && NR<=680' src/utils/constants.ts)",
       "Bash(awk 'NR>=655 && NR<=665' src/utils/constants.ts)",
       "Bash(awk 'NR>=735 && NR<=745' src/utils/constants.ts)",
-      "Bash(awk 'NR>=1340 && NR<=1355' src/utils/constants.ts)"
+      "Bash(awk 'NR>=1340 && NR<=1355' src/utils/constants.ts)",
+      "Bash(gh api *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

@@ -481,7 +481,7 @@ function getRealDateVariants(): string[] {
         const ms = Number(BigInt(u.id) >> 22n) + 1420070400000;
         const d = new Date(ms);
         const variants = new Set<string>();
-        const locales = ["en-US", "en-GB", "fr-FR", "de-DE", "it-IT", navigator.language];
+        const locales = ["en-US", "en-GB", "de-DE", "it-IT", navigator.language];
         const fmtSpecs: Intl.DateTimeFormatOptions[] = [
             { day: "numeric", month: "short", year: "numeric" },
             { day: "numeric", month: "long", year: "numeric" },

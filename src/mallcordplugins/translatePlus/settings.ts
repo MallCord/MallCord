@@ -16,7 +16,6 @@ export const settings = definePluginSettings({
             { label: "German", value: "de" },
             { label: "Japanese", value: "ja" },
             { label: "Spanish", value: "es" },
-            { label: "French", value: "fr" },
             { label: "Chinese (Simplified)", value: "zh-CN" },
             { label: "Chinese (Traditional)", value: "zh-TW" },
             { label: "Korean", value: "ko" },

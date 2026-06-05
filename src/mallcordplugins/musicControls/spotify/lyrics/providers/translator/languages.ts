@@ -144,10 +144,6 @@ export default [
         label: "Finnish"
     },
     {
-        value: "fr",
-        label: "French"
-    },
-    {
         value: "fy",
         label: "Frisian"
     },
