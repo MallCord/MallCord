@@ -7,19 +7,71 @@
 import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { MallCordDevs } from "@utils/constants";
 import definePlugin, { IconComponent } from "@utils/types";
-import { MediaEngineStore, React, SelectedChannelStore, useState, useStateFromStores } from "@webpack/common";
+import { findByPropsLazy } from "@webpack";
+import { MediaEngineStore, React, SelectedChannelStore, VoiceActions, useState, useStateFromStores } from "@webpack/common";
+
+// VoiceActions.toggleSelfDeaf() physically toggles deafen — we use it to send
+// the gateway update, then immediately block the audio-level setSelfDeaf so the
+// ears stay open.
 
 let fakeDeafActive = false;
-let originalIsSelfDeaf: (() => boolean) | null = null;
+let originalIsSelfDeaf: ((ctx?: string) => boolean) | null = null;
+
+// MediaEngine (not Store) lives on MediaEngineStore.getMediaEngine().
+// Its active connections each expose setSelfDeaf(bool) which controls audio.
+// We no-op that during the gateway toggle so the toggle goes out but audio stays.
+let blockAudioDeafen = false;
+
+function patchConnections(block: boolean) {
+    blockAudioDeafen = block;
+    try {
+        const engine = (MediaEngineStore as any).getMediaEngine?.();
+        if (!engine) return;
+        for (const conn of engine.connections ?? []) {
+            if (!conn?.setSelfDeaf) continue;
+            if (block) {
+                if (!conn.__fakeDeafOriginal) {
+                    conn.__fakeDeafOriginal = conn.setSelfDeaf.bind(conn);
+                    conn.setSelfDeaf = () => { };
+                }
+            } else {
+                if (conn.__fakeDeafOriginal) {
+                    conn.setSelfDeaf = conn.__fakeDeafOriginal;
+                    delete conn.__fakeDeafOriginal;
+                }
+            }
+        }
+    } catch { }
+}
 
 function setFakeDeaf(value: boolean) {
     fakeDeafActive = value;
-    if (value && originalIsSelfDeaf === null) {
-        originalIsSelfDeaf = MediaEngineStore.isSelfDeaf.bind(MediaEngineStore);
-        (MediaEngineStore as any).isSelfDeaf = () => true;
-    } else if (!value && originalIsSelfDeaf !== null) {
-        (MediaEngineStore as any).isSelfDeaf = originalIsSelfDeaf;
-        originalIsSelfDeaf = null;
+
+    if (value) {
+        // Patch isSelfDeaf so the UI shows the deafen icon
+        if (!originalIsSelfDeaf) {
+            originalIsSelfDeaf = (MediaEngineStore as any).isSelfDeaf.bind(MediaEngineStore);
+            (MediaEngineStore as any).isSelfDeaf = () => true;
+        }
+        // Block audio-level deafen on connections, then call toggleSelfDeaf so
+        // the gateway message goes out with self_deaf: true
+        const wasDeafened = originalIsSelfDeaf?.() === true;
+        if (!wasDeafened) {
+            patchConnections(true);
+            VoiceActions.toggleSelfDeaf();
+            // Restore connection patches after toggle propagates
+            setTimeout(() => patchConnections(false), 200);
+        }
+    } else {
+        // Restore isSelfDeaf
+        if (originalIsSelfDeaf) {
+            (MediaEngineStore as any).isSelfDeaf = originalIsSelfDeaf;
+            originalIsSelfDeaf = null;
+        }
+        // If Discord now thinks we're deafened (we sent self_deaf: true earlier),
+        // toggle again to undeafen on the gateway
+        const currentlyDeaf = (MediaEngineStore as any).isSelfDeaf();
+        if (currentlyDeaf) VoiceActions.toggleSelfDeaf();
     }
 }
 
@@ -56,7 +108,7 @@ const FakeDeafenButton: ChatBarButtonFactory = ({ isAnyChat }) => {
 
 export default definePlugin({
     name: "FakeDeafen",
-    description: "Makes your deafen icon appear active without actually deafening your audio. Only visual — you can still hear everything.",
+    description: "Makes others see you as deafened while you can still hear everything. Sends a real voice state update so the icon shows for everyone.",
     tags: ["Voice", "Fun"],
     authors: [MallCordDevs.pepsify],
     dependencies: ["ChatInputButtonAPI"],
@@ -67,6 +119,6 @@ export default definePlugin({
     },
 
     stop() {
-        setFakeDeaf(false);
+        if (fakeDeafActive) setFakeDeaf(false);
     },
 });
