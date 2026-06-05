@@ -668,6 +668,10 @@ export const MallCordDevs = Object.freeze({
         name: "Pepsify",
         id: 740252723160809512n
     },
+    SirPhantom89: {
+        name: "sirphantom89",
+        id: 1464279455844274188n
+    },
     Dann: {
         name: "Dann",
         id: 1124607974594314270n
