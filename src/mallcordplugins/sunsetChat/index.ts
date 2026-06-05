@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "SunsetChat",
     description: "Paints a dreamy vaporwave sunset gradient behind the message area.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

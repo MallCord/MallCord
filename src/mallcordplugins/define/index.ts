@@ -19,7 +19,7 @@ interface DictEntry {
 export default definePlugin({
     name: "Define",
     description: "/define looks up a word's dictionary definition (sent only to you).",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

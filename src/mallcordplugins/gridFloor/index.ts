@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "GridFloor",
     description: "Scrolling retro grid floor along the bottom of the window.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

@@ -17,7 +17,7 @@ function toFullwidth(text: string) {
 export default definePlugin({
     name: "AutoVaporwave",
     description: "Turn every message you send into ｆｕｌｌｗｉｄｔｈ text automatically.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start() {
         this.pre = addMessagePreSendListener((_, msg) => {
             if (msg.content) msg.content = toFullwidth(msg.content);

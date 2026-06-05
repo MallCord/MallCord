@@ -26,7 +26,7 @@ const opt = (name: string) => ({
 export default definePlugin({
     name: "ShipCalc",
     description: "/ship rates the love between two people.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

@@ -84,7 +84,7 @@ export default definePlugin({
     name: "AutoReact",
     description: "Automatically react to messages containing specific keywords.",
     tags: ["Utility", "Chat"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     start() {

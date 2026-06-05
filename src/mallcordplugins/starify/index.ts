@@ -11,7 +11,7 @@ import definePlugin from "@utils/types";
 export default definePlugin({
     name: "Starify",
     description: "Adds /starify to wrap your message in sparkles ｡ﾟ☆.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

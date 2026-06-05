@@ -33,7 +33,7 @@ async function patchMember(userId: string, guildId: string, body: object) {
 export default definePlugin({
     name: "AutoUnmute",
     description: "Automatically unmutes/undeafens you when you're server muted or deafened, if you have permission.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
 
     flux: {
         VOICE_STATE_UPDATES({ voiceStates }: { voiceStates: VoiceState[]; }) {

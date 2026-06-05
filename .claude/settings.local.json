@@ -15,7 +15,13 @@
       "Bash(awk 'NR>=1340 && NR<=1355' src/utils/constants.ts)",
       "Bash(gh api *)",
       "WebFetch(domain:api.github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh repo *)",
+      "PowerShell(gh repo view MallCord/MallCord --json name,description,stargazerCount,forkCount,isFork,parent,createdAt,updatedAt,licenseInfo,url,pushedAt)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/TestcordDev/TestCord/main/src/testcordplugins/FakeUserSwitcher/index.tsx\")",
+      "Bash(sed -n '430,470p' /tmp/fus_index.tsx)",
+      "Bash(awk 'NR>=50 && NR<=70')"
     ]
   }
 }

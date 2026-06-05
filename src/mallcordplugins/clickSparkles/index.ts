@@ -30,7 +30,7 @@ function burst(e: MouseEvent) {
 export default definePlugin({
     name: "ClickSparkles",
     description: "Sprinkles little neon sparkles wherever you click.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start() {
         enableStyle(style);
         document.addEventListener("click", burst);

@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "ReadableSpoilers",
     description: "Gives unrevealed spoilers a subtle neon outline so you can spot them at a glance.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "GlassPanels",
     description: "Frosted-glass blur on the sidebar and member list.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

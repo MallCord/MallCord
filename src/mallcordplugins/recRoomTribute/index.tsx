@@ -15,7 +15,7 @@ export default definePlugin({
     name: "RecRoomTribute",
     description: "A memorial to Rec Room (2016–2026), the VR social platform that brought millions together before closing on June 1, 2026.",
     tags: ["Fun"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
 
     settingsAboutComponent() {
         return (

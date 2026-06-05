@@ -110,7 +110,7 @@ export default definePlugin({
     name: "FakeDeafen",
     description: "Makes others see you as deafened while you can still hear everything. Sends a real voice state update so the icon shows for everyone.",
     tags: ["Voice", "Fun"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["ChatInputButtonAPI"],
 
     chatBarButton: {

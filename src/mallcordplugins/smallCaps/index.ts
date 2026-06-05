@@ -17,7 +17,7 @@ const caps: Record<string, string> = {
 export default definePlugin({
     name: "SmallCaps",
     description: "/smallcaps writes your message in ꜱᴍᴀʟʟ ᴄᴀᴘꜱ.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

@@ -159,7 +159,7 @@ export default definePlugin({
     name: "LastFMRichPresence",
     description: "Show your currently scrobbling Last.fm track as Discord rich presence.",
     tags: ["Activity", "Media"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     settingsAboutComponent() {

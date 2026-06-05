@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "CompactCompose",
     description: "Slims down the message box and hides the upload/gift clutter until you focus it.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

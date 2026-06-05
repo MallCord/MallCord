@@ -170,7 +170,7 @@ export default definePlugin({
     name: "LyricsStatus",
     description: "Shows the current Spotify lyric line in your Discord custom status in real time. Lyrics fetched from LrcLib.",
     tags: ["Activity", "Utility"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     start() {

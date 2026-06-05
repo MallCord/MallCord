@@ -11,7 +11,7 @@ import { showToast, Toasts } from "@webpack/common";
 export default definePlugin({
     name: "MallGreeting",
     description: "Greets you with a cozy vaporwave toast every time MallCord starts up.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start() {
         showToast("✦ﾟ｡ welcome back to the mall ｡ﾟ✦", Toasts.Type.MESSAGE);
     }

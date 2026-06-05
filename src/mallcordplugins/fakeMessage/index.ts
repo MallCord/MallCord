@@ -13,7 +13,7 @@ export default definePlugin({
     name: "FakeMessage",
     description: "Send a client-side fake message posed as any user via /fakemsg. Only you can see it.",
     tags: ["Chat", "Fun"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
 
     commands: [

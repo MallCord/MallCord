@@ -13,7 +13,7 @@ const swaps: Record<string, string> = { a: "4", e: "3", i: "1", o: "0", s: "5", 
 export default definePlugin({
     name: "LeetText",
     description: "/leet rewrites your message in 1337 5p34k.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

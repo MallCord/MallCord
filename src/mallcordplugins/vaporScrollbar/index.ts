@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "VaporScrollbar",
     description: "Replaces scrollbars with a neon pink-to-cyan vaporwave gradient.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

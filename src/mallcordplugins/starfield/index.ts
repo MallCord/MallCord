@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "Starfield",
     description: "A faint twinkling starfield drifting behind everything.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

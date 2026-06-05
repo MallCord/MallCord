@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "HideNitroUpsells",
     description: "Hides Nitro upsell banners, gift buttons and 'boost' nags around the client.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

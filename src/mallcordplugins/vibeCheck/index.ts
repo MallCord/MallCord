@@ -23,7 +23,7 @@ const VIBES = [
 export default definePlugin({
     name: "VibeCheck",
     description: "Adds /vibe to drop a random vaporwave mood into chat.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {

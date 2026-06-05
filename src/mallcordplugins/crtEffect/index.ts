@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "CRTEffect",
     description: "Overlays retro CRT scanlines on the client for that old-monitor vaporwave look.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

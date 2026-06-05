@@ -13,7 +13,7 @@ import style from "./style.css?managed";
 export default definePlugin({
     name: "PastelMentions",
     description: "Recolors mentions and role pills with a soft pastel vaporwave gradient.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     start: () => enableStyle(style),
     stop: () => disableStyle(style),
 });

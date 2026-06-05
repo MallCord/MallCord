@@ -167,7 +167,7 @@ export default definePlugin({
     name: "SoundCloudRichPresence",
     description: "Show your currently playing SoundCloud track as Discord rich presence.",
     tags: ["Activity", "Media"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     settingsAboutComponent() {

@@ -48,7 +48,7 @@ async function schedule(r: Reminder) {
 export default definePlugin({
     name: "RemindMe",
     description: "/remindme <amount> <m|h|d> <text> pings you with a desktop notification later. Survives restarts.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
 
     async start() {

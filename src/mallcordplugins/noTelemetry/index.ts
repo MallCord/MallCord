@@ -33,7 +33,7 @@ export default definePlugin({
     name: "NoTelemetry",
     description: "Blocks additional Discord telemetry beyond the built-in NoTrack plugin: experiment exposure reporting, call diagnostics, and remote debug logging.",
     tags: ["Privacy"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     patches: [

@@ -29,7 +29,7 @@ export default definePlugin({
     name: "VoiceSettings",
     description: "Extends voice chat audio bitrate beyond Discord's default and unlocks the push-to-talk release delay slider above its 2-second cap.",
     tags: ["Voice", "Utility"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     settings,
 
     patches: [

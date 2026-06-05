@@ -40,7 +40,7 @@ export default definePlugin({
     name: "ImageSearch",
     description: "Adds a 'Search Image' submenu to image context menus with Google Lens, Yandex, SauceNAO, and TinEye.",
     tags: ["Utility", "Media"],
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
 
     contextMenus: {
         "message-media-context": addSearchItems,

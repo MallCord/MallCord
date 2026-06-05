@@ -18,7 +18,7 @@ function toFullwidth(text: string): string {
 export default definePlugin({
     name: "VaporwaveText",
     description: "Adds /vaporwave to turn your message into ａｅｓｔｈｅｔｉｃ fullwidth text.",
-    authors: [MallCordDevs.pepsify],
+    authors: [MallCordDevs.Sharp],
     dependencies: ["CommandsAPI"],
     commands: [
         {
