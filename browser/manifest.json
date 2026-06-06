@@ -6,7 +6,7 @@
     "author": "MallCord",
     "homepage_url": "https://github.com/MallCord/MallCord",
     "icons": {
-        "128": "icon.png"
+        "256": "icon.png"
     },
     "host_permissions": [
         "*://*.discord.com/*",
