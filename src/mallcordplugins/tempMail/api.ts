@@ -1,6 +1,5 @@
 /*
- * Vencord, a Discord client mod
- * Copyright (c) 2026 Vendicated and contributors
+ * MallCord TempMail — mail.tm API wrapper
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -21,9 +20,22 @@ export interface TmMessage {
     seen: boolean;
 }
 
+export interface TmAttachment {
+    id: string;
+    filename: string;
+    contentType: string;
+    disposition: string;
+    transferEncoding: string;
+    related: boolean;
+    size: number;
+}
+
 export interface TmMessageFull extends TmMessage {
     html: string[];
     text: string;
+    attachments: TmAttachment[];
+    to: { address: string; name: string; }[];
+    cc: { address: string; name: string; }[];
 }
 
 export interface TmDomain {

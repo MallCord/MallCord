@@ -1,6 +1,5 @@
 /*
- * Vencord, a Discord client mod
- * Copyright (c) 2026 Vendicated and contributors
+ * MallCord TempMail — DataStore persistence
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -31,6 +30,7 @@ export async function saveAccount(acc: SavedAccount): Promise<void> {
 export async function removeAccount(id: string): Promise<void> {
     const list = await getSavedAccounts();
     await DataStore.set(ACCOUNTS_KEY, list.filter(a => a.id !== id));
+    // Also delete saved messages for this account
     const all = await getAllSavedMessages();
     delete all[id];
     await DataStore.set(MESSAGES_KEY, all);

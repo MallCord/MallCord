@@ -8,7 +8,7 @@
 
 .tm-shell {
     display: flex;
-    height: 540px;
+    height: 580px;
     overflow: hidden;
     background: var(--background-primary);
 }
@@ -215,7 +215,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px 12px;
+    gap: 8px;
+    padding: 12px 20px;
     border-bottom: 1px solid var(--background-modifier-accent);
     flex-shrink: 0;
 }
@@ -315,20 +316,28 @@
 .tm-msg-from {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-normal);
+    color: var(--header-primary, #fff);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* Sender's raw email address shown in a lighter color next to the name */
+.tm-msg-from-addr {
+    font-weight: 400;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-left: 3px;
+}
+
 .tm-msg-subject {
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-normal);
+    color: var(--header-primary, #fff);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 .tm-msg-preview {
@@ -337,7 +346,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .tm-msg-right {
@@ -370,48 +379,221 @@
     color: var(--text-danger, #f87171);
 }
 
+/* ── Render / plain text tabs ──────────────────────────────────── */
+.tm-msg-view-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.tm-tab-btn {
+    background: var(--background-secondary-alt);
+    border: 1px solid var(--background-modifier-accent);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-family: var(--font-primary);
+}
+
+.tm-tab-btn:hover {
+    color: var(--text-normal);
+    border-color: var(--brand-500);
+}
+
+.tm-tab-btn.tm-tab-active {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+    color: #fff;
+}
+
 /* ── Message view ──────────────────────────────────────────────── */
 .tm-msg-view {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 16px 20px;
-    gap: 8px;
+    padding: 14px 20px 16px;
+    gap: 10px;
 }
 
 .tm-msg-view-subject {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
-    color: var(--text-normal);
+    color: var(--header-primary, #fff);
     line-height: 1.3;
 }
 
+/* Meta block with rows */
 .tm-msg-view-meta {
     display: flex;
-    gap: 16px;
-    font-size: 12.5px;
-    color: var(--text-muted);
+    flex-direction: column;
+    gap: 4px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--background-modifier-accent);
-    flex-wrap: wrap;
 }
 
-.tm-msg-view-meta strong {
+.tm-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12.5px;
+}
+
+.tm-meta-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    min-width: 32px;
+    flex-shrink: 0;
+}
+
+.tm-meta-val {
+    color: var(--header-primary, #fff);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    word-break: break-all;
+}
+
+.tm-meta-val strong {
+    color: var(--header-primary, #fff);
+}
+
+/* The raw email address in a softer color */
+.tm-meta-email {
+    font-size: 11.5px;
+    color: var(--text-muted);
+}
+
+/* Small copy button next to the sender address */
+.tm-meta-copy {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    transition: background 0.1s, color 0.1s;
+    flex-shrink: 0;
+}
+
+.tm-meta-copy:hover {
+    background: var(--background-modifier-hover);
     color: var(--text-normal);
 }
 
+/* Body wrapper — scrollable, takes remaining height */
 .tm-msg-view-body {
     flex: 1;
     overflow-y: auto;
+    border-radius: 8px;
+    background: var(--background-secondary);
+    min-height: 0;
+}
+
+/* ── HTML iframe email renderer ────────────────────────────────── */
+.tm-email-iframe {
+    width: 100%;
+    min-height: 300px;
+    border: none;
+    border-radius: 8px;
+    display: block;
+    /* height is set dynamically by JS after load */
+}
+
+/* ── Plain text email body ─────────────────────────────────────── */
+.tm-email-text {
+    padding: 16px;
     font-size: 13.5px;
-    color: var(--text-normal);
-    line-height: 1.65;
+    font-family: var(--font-primary);
+    color: #e2e8f0;
+    line-height: 1.75;
     white-space: pre-wrap;
     word-break: break-word;
-    background: var(--background-secondary);
-    border-radius: 8px;
-    padding: 14px 16px;
+    cursor: text;
+    /* user-select set inline via React style prop */
+}
+
+/* Clickable links inside plain text (rendered by the browser automatically) */
+.tm-email-text a {
+    color: var(--text-link, #a78bfa);
+    text-decoration: underline;
+}
+
+.tm-email-empty {
+    padding: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ── Attachments ───────────────────────────────────────────────── */
+.tm-attachments {
+    flex-shrink: 0;
+    padding-top: 8px;
+    border-top: 1px solid var(--background-modifier-accent);
+}
+
+.tm-attach-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.tm-attach-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tm-attach-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--background-secondary-alt);
+    border: 1px solid var(--background-modifier-accent);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--text-normal);
+    max-width: 200px;
+    cursor: default;
+    transition: border-color 0.1s;
+}
+
+.tm-attach-item:hover {
+    border-color: var(--brand-500);
+}
+
+.tm-attach-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.tm-attach-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--header-primary, #fff);
+}
+
+.tm-attach-size {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 /* ── Accounts ──────────────────────────────────────────────────── */
@@ -607,6 +789,7 @@
     cursor: pointer;
     transition: background 0.12s;
     font-family: var(--font-primary);
+    flex-shrink: 0;
 }
 
 .tm-btn-danger-sm:hover {
@@ -623,6 +806,7 @@
     padding: 0;
     transition: color 0.1s;
     font-family: var(--font-primary);
+    flex-shrink: 0;
 }
 
 .tm-back-btn:hover {

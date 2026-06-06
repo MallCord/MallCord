@@ -1,6 +1,5 @@
 /*
- * Vencord, a Discord client mod
- * Copyright (c) 2026 Vendicated and contributors
+ * MallCord TempMail — Modal UI
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -13,7 +12,7 @@ import { Button, Modal, React, showToast, TextInput, Toasts, useEffect, useRef, 
 import {
     createAccount, deleteAccount, deleteMessage,
     getDomains, getMessage, getMessages, getToken,
-    randomString, TmMessage, TmMessageFull,
+    randomString, TmAttachment, TmMessage, TmMessageFull,
 } from "../api";
 import {
     getActiveId, getDataStorePath, getSavedAccounts, getSavedMessages,
@@ -35,6 +34,8 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
     const [domains, setDomains] = useState<string[]>([]);
     const [selDomain, setSelDomain] = useState("");
     const [customUser, setCustomUser] = useState("");
+    const [bodyMode, setBodyMode] = useState<"html" | "text">("html");
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const pollRef = useRef<any>(null);
 
     useEffect(() => {
@@ -60,6 +61,22 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
         pollRef.current = setInterval(() => fetchInbox(active, true), 15_000);
         return () => clearInterval(pollRef.current);
     }, [active]);
+
+    // Resize iframe to content height after HTML loads
+    useEffect(() => {
+        if (!iframeRef.current) return;
+        const resize = (): void => {
+            try {
+                const doc = iframeRef.current?.contentDocument;
+                if (doc?.body) {
+                    iframeRef.current!.style.height = doc.body.scrollHeight + 32 + "px";
+                }
+            } catch { }
+        };
+        const el = iframeRef.current;
+        el.addEventListener("load", resize);
+        return () => el.removeEventListener("load", resize);
+    }, [openMsg, bodyMode]);
 
     async function fetchDomains() {
         try {
@@ -87,6 +104,7 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
     async function openMessage(msg: TmMessage) {
         if (!active) return;
         setMsgLoading(true);
+        setBodyMode("html");
         try {
             const full = await getMessage(msg.id, active.token);
             setOpenMsg(full);
@@ -158,7 +176,45 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
         }
     }
 
+    // Build iframe HTML that allows images and opens links safely
+    function buildIframeHtml(html: string) {
+        return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+  html,body{margin:0;padding:0;background:#1e2030;color:#e2e8f0;font-family:'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.7;}
+  body{padding:16px;}
+  img{max-width:100%;height:auto;border-radius:6px;display:block;margin:6px 0;}
+  a{color:#a78bfa;word-break:break-all;}
+  a:hover{color:#c4b5fd;}
+  table{max-width:100%!important;border-collapse:collapse;}
+  td,th{word-break:break-word;padding:4px 6px;}
+  pre,code{background:#12141e;border-radius:4px;padding:2px 6px;font-size:13px;color:#c9d1d9;}
+  blockquote{border-left:3px solid #6c63ff;margin:8px 0;padding:4px 12px;color:#8892b0;}
+  *{box-sizing:border-box;}
+</style></head><body>${html}</body></html>`;
+    }
+
     const unread = messages.filter(m => !m.seen).length;
+
+    // Sender display: show "Name <email>" or just email
+    function fmtSender(from: { address: string; name: string; }) {
+        if (!from) return "Unknown";
+        if (from.name && from.name !== from.address) return `${from.name} <${from.address}>`;
+        return from.address;
+    }
+
+    // Attachment icon based on content type
+    function attachIcon(ct: string) {
+        if (ct.startsWith("image/")) return "🖼️";
+        if (ct.startsWith("video/")) return "🎬";
+        if (ct.startsWith("audio/")) return "🎵";
+        if (ct.includes("pdf")) return "📄";
+        if (ct.includes("zip") || ct.includes("rar") || ct.includes("7z")) return "🗜️";
+        return "📎";
+    }
+
+    const hasHtml = (openMsg?.html?.length ?? 0) > 0;
+    const hasText = !!openMsg?.text;
+    const hasAttachments = (openMsg?.attachments?.length ?? 0) > 0;
 
     return (
         <Modal {...modalProps} size="lg" title="Temp Mail">
@@ -218,7 +274,7 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
                         </div>
                     )}
 
-                    {/* INBOX */}
+                    {/* ── INBOX ── */}
                     {view === "inbox" && (
                         <div className="tm-view">
                             <div className="tm-view-header">
@@ -255,7 +311,12 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
                                     {messages.map(m => (
                                         <div key={m.id} className={`tm-msg-row ${!m.seen ? "tm-msg-unread" : ""}`} onClick={() => openMessage(m)}>
                                             <div className="tm-msg-left">
-                                                <div className="tm-msg-from">{m.from.name || m.from.address}</div>
+                                                {/* Sender email always visible */}
+                                                <div className="tm-msg-from">
+                                                    {m.from.name
+                                                        ? <>{m.from.name} <span className="tm-msg-from-addr">&lt;{m.from.address}&gt;</span></>
+                                                        : m.from.address}
+                                                </div>
                                                 <div className="tm-msg-subject">{m.subject || "(no subject)"}</div>
                                                 <div className="tm-msg-preview">{m.intro}</div>
                                             </div>
@@ -272,32 +333,121 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
                         </div>
                     )}
 
-                    {/* MESSAGE VIEW */}
+                    {/* ── MESSAGE VIEW ── */}
                     {view === "message" && (
                         <div className="tm-view">
                             <div className="tm-view-header">
                                 <button className="tm-back-btn" onClick={() => setView("inbox")}>← Back</button>
+                                <div className="tm-msg-view-tabs">
+                                    {hasHtml && (
+                                        <button
+                                            className={`tm-tab-btn ${bodyMode === "html" ? "tm-tab-active" : ""}`}
+                                            onClick={() => setBodyMode("html")}
+                                        >
+                                            Rendered
+                                        </button>
+                                    )}
+                                    {hasText && (
+                                        <button
+                                            className={`tm-tab-btn ${bodyMode === "text" ? "tm-tab-active" : ""}`}
+                                            onClick={() => setBodyMode("text")}
+                                        >
+                                            Plain text
+                                        </button>
+                                    )}
+                                </div>
                                 {openMsg && (
                                     <button className="tm-btn-danger-sm" onClick={() => openMsg && handleDeleteMessage(openMsg.id)}>Delete</button>
                                 )}
                             </div>
+
                             {msgLoading && <div className="tm-spinner">Loading message…</div>}
+
                             {openMsg && !msgLoading && (
                                 <div className="tm-msg-view">
+                                    {/* Subject */}
                                     <div className="tm-msg-view-subject">{openMsg.subject || "(no subject)"}</div>
+
+                                    {/* Meta — sender email always shown */}
                                     <div className="tm-msg-view-meta">
-                                        <span>From <strong>{openMsg.from.name || openMsg.from.address}</strong></span>
-                                        <span>{fmtDate(openMsg.createdAt)}</span>
+                                        <div className="tm-meta-row">
+                                            <span className="tm-meta-label">From</span>
+                                            <span className="tm-meta-val">
+                                                {openMsg.from.name
+                                                    ? <><strong>{openMsg.from.name}</strong> <span className="tm-meta-email">&lt;{openMsg.from.address}&gt;</span></>
+                                                    : <strong>{openMsg.from.address}</strong>
+                                                }
+                                                <button
+                                                    className="tm-meta-copy"
+                                                    title="Copy sender email"
+                                                    onClick={() => { copyToClipboard(openMsg.from.address); showToast("Copied!", Toasts.Type.SUCCESS); }}
+                                                >
+                                                    <svg viewBox="0 0 24 24" width={12} height={12} fill="currentColor"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" /></svg>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        {openMsg.to?.length > 0 && (
+                                            <div className="tm-meta-row">
+                                                <span className="tm-meta-label">To</span>
+                                                <span className="tm-meta-val">{openMsg.to.map(t => t.address).join(", ")}</span>
+                                            </div>
+                                        )}
+                                        <div className="tm-meta-row">
+                                            <span className="tm-meta-label">Date</span>
+                                            <span className="tm-meta-val">{new Date(openMsg.createdAt).toLocaleString()}</span>
+                                        </div>
                                     </div>
+
+                                    {/* Body */}
                                     <div className="tm-msg-view-body">
-                                        {openMsg.text || stripHtml(openMsg.html?.[0] ?? "") || "(empty)"}
+                                        {/* HTML view — iframe with images + links enabled */}
+                                        {bodyMode === "html" && hasHtml && (
+                                            <iframe
+                                                ref={iframeRef}
+                                                className="tm-email-iframe"
+                                                title="Email content"
+                                                sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                                                srcDoc={buildIframeHtml(
+                                                    Array.isArray(openMsg.html)
+                                                        ? openMsg.html.join("")
+                                                        : (openMsg.html ?? "")
+                                                )}
+                                            />
+                                        )}
+
+                                        {/* Plain text view — selectable, white, readable */}
+                                        {(bodyMode === "text" || (!hasHtml && hasText)) && (
+                                            <div className="tm-email-text" style={{ userSelect: "text" }}>
+                                                {openMsg.text}
+                                            </div>
+                                        )}
+
+                                        {!hasHtml && !hasText && (
+                                            <div className="tm-email-empty">(No content)</div>
+                                        )}
                                     </div>
+
+                                    {/* Attachments */}
+                                    {hasAttachments && (
+                                        <div className="tm-attachments">
+                                            <div className="tm-attach-label">Attachments ({openMsg.attachments!.length})</div>
+                                            <div className="tm-attach-list">
+                                                {openMsg.attachments!.map((att: TmAttachment) => (
+                                                    <div key={att.id} className="tm-attach-item">
+                                                        <span className="tm-attach-icon">{attachIcon(att.contentType)}</span>
+                                                        <span className="tm-attach-name" title={att.filename}>{att.filename}</span>
+                                                        <span className="tm-attach-size">{fmtSize(att.size)}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
                     )}
 
-                    {/* ACCOUNTS */}
+                    {/* ── ACCOUNTS ── */}
                     {view === "accounts" && (
                         <div className="tm-view">
                             <div className="tm-view-header">
@@ -337,7 +487,7 @@ export function TempMailModal({ modalProps }: { modalProps: RenderModalProps; })
                         </div>
                     )}
 
-                    {/* NEW ADDRESS */}
+                    {/* ── NEW ADDRESS ── */}
                     {view === "new" && (
                         <div className="tm-view">
                             <div className="tm-view-header">
@@ -390,6 +540,8 @@ function fmtDate(iso: string) {
     return d.toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
-function stripHtml(html: string) {
-    return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+function fmtSize(bytes: number) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
