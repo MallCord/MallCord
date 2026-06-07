@@ -28,7 +28,7 @@ const ModalContent = ModalContent_ as React.ComponentType<any>;
 const ModalFooter = ModalFooter_ as React.ComponentType<any>;
 const ModalCloseButton = ModalCloseButton_ as React.ComponentType<any>;
 
-const DELAY_MS = 500; // safe rate-limit gap between deletes
+const DELAY_MS = 500;
 
 function sleep(ms: number): Promise<void> {
     return new Promise(r => setTimeout(r, ms));
@@ -38,7 +38,6 @@ async function purge(channelId: string, limit: number, onProgress: (done: number
     const me = UserStore.getCurrentUser();
     if (!me) return;
 
-    // Collect up to `limit` of our own messages from the store
     const allMessages: any[] = [];
     const stored = MessageStore.getMessages(channelId);
     if (stored) {
@@ -48,7 +47,6 @@ async function purge(channelId: string, limit: number, onProgress: (done: number
         }
     }
 
-    // Sort newest-first, take up to limit
     allMessages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     const targets = allMessages.slice(0, limit);
     const total = targets.length;

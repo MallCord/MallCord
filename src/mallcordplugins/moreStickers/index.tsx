@@ -41,6 +41,7 @@ export default definePlugin({
     patches: [
         {
             find: "#{intl::STICKER_BUTTON_LABEL}",
+            noWarn: true,
             replacement: [{
                 match: /(children:\(0,\i\.jsx\)\()(.{0,10})({className:\i\(\)\(\i\.\i,\i\.\i)/,
                 replace: "$1arguments[0]?.stickersType?$self.stickerButton:$2$3"
@@ -54,6 +55,7 @@ export default definePlugin({
         },
         {
             find: ".GIFT_PROMOTION]).",
+            noWarn: true,
             replacement: [
                 {
                     match: /(?<=(,\i\.stickers\?\.button.{0,50}\i\.push\(\(.{0,100})\},"sticker"\)\))/,
@@ -63,6 +65,7 @@ export default definePlugin({
         },
         {
             find: "#{intl::EXPRESSION_PICKER_CATEGORIES_A11Y_LABEL}",
+            noWarn: true,
             replacement: [
                 {
                     match: /(?<=(\i)\?(\(.{0,15}\))\((\i),\{.{0,150}(\i)===\i\.\i\.STICKER,.{0,150}children:(.{0,50}\.\i,children:.{0,50})\}\)\}\):null)/,
@@ -129,7 +132,6 @@ export default definePlugin({
 
         React.useEffect(() => {
             (async () => {
-                console.log("Updating sticker packs...", counter);
                 setCounter(counter + 1);
 
                 const sps = (await Promise.all(
@@ -154,7 +156,7 @@ export default definePlugin({
 
             loadFFmpeg(ffmpeg[0], () => {
                 ffmpegLoaded[1](true);
-            });
+            }).catch(() => {});
         }, []);
 
         return (

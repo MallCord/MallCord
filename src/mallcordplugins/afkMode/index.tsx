@@ -41,7 +41,6 @@ async function onMessageCreate({ message, channelId }: any) {
         const cid: string = channelId ?? message.channel_id;
         if (!cid) return;
 
-        // Only DMs (channel type 1)
         const channel = ChannelStore.getChannel(cid);
         if (!channel || channel.type !== 1) return;
 

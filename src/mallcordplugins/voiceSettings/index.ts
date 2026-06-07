@@ -13,15 +13,8 @@ import { FluxDispatcher } from "@webpack/common";
 
 const logger = new Logger("VoiceSettings");
 
-// Lazily grab the module that owns setNoiseCancellation —
-// the same function patched by AltKrispSwitch, so this is proven to exist.
 const NoiseModule = findByPropsLazy("setNoiseCancellation");
 
-// ── getUserMedia interceptor ──────────────────────────────────────────────────
-// Patches browser-level audio constraints for stereo, echo-cancellation,
-// noise suppression and auto gain control.  Works immediately for Vesktop /
-// browser; on Discord Desktop the native voice engine still controls these,
-// but the patch silently no-ops without breaking anything.
 let _origGUM: (typeof navigator.mediaDevices.getUserMedia) | null = null;
 
 function applyGUMPatch() {
@@ -55,14 +48,10 @@ function removeGUMPatch() {
     }
 }
 
-// ── Apply noise suppression preference ───────────────────────────────────────
-// Mirrors the action Discord's UI dispatches when you change noise suppression.
 function applyNoiseSuppression() {
     try {
         const mode = settings.store.noiseSuppression;
-        // enableKrisp=true → Krisp AI | enableKrisp=false → Standard or None
-        // "standard" leaves Krisp off; "none" is handled by the GUM patch above
-        // plus making sure Krisp stays off.
+
         const enableKrisp = mode === "krisp";
         NoiseModule.setNoiseCancellation(enableKrisp, {});
     } catch (e) {
@@ -70,7 +59,6 @@ function applyNoiseSuppression() {
     }
 }
 
-// ── Settings ──────────────────────────────────────────────────────────────────
 const settings = definePluginSettings({
     voiceBitrateKbps: {
         type: OptionType.SLIDER,
@@ -112,7 +100,6 @@ const settings = definePluginSettings({
     },
 });
 
-// ── Plugin ────────────────────────────────────────────────────────────────────
 export default definePlugin({
     name: "VoiceSettings",
     description: "Fine-grained voice audio controls: Opus bitrate, stereo capture, noise suppression mode, echo cancellation, auto gain control, and extended PTT delay.",
@@ -121,9 +108,7 @@ export default definePlugin({
     settings,
 
     patches: [
-        // ── Opus voice bitrate ────────────────────────────────────────────────
-        // Discord hardcodes the voice bitrate; this replaces the literal value
-        // with a reference to the plugin setting.
+
         {
             find: "mediaBitrate:",
             replacement: {
@@ -133,8 +118,6 @@ export default definePlugin({
             noWarn: true,
         },
 
-        // ── Push-to-talk release delay ────────────────────────────────────────
-        // Discord caps the slider at 2 000 ms; raise the maxValue.
         {
             find: "pttReleaseDelay",
             replacement: {
@@ -144,10 +127,6 @@ export default definePlugin({
             noWarn: true,
         },
 
-        // ── Stereo Opus SDP ───────────────────────────────────────────────────
-        // When stereo is enabled, append stereo=1;sprop-stereo=1 to the Opus
-        // fmtp line in the SDP offer/answer so the receiver accepts stereo.
-        // This mirrors the approach used by WebScreenShareFixes for streaming.
         {
             find: ";usedtx=",
             replacement: {
@@ -162,7 +141,6 @@ export default definePlugin({
         applyGUMPatch();
         applyNoiseSuppression();
 
-        // Re-apply noise suppression preference whenever the user joins a call.
         FluxDispatcher.subscribe("VOICE_CHANNEL_SELECT", applyNoiseSuppression);
     },
 

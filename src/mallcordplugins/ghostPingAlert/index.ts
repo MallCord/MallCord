@@ -25,7 +25,6 @@ interface CachedPing {
     content: string;
 }
 
-// messageId → ping info, capped at 500 entries
 const cache = new Map<string, CachedPing>();
 const MAX = 500;
 
