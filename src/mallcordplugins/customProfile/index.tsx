@@ -1513,9 +1513,10 @@ export default definePlugin({
                 const style: React.CSSProperties = { borderRadius: "50%", width: "22px", height: "22px" };
 
                 // Determine which fake badges are active to filter real ones (avoid duplicates)
-                const nl = storedData.nitroLevel ?? -1;
+                // Default to level 0 (base Nitro badge) when nitro is enabled but no level was picked
+                const nl = storedData.nitroLevel != null ? storedData.nitroLevel : (storedData.nitro ? 0 : -1);
                 const bm = storedData.boostMonths ?? -1;
-                const hasNitroFake = nl >= 0 && nl < NITRO_LEVELS.length;
+                const hasNitroFake = storedData.nitro === true || (nl >= 0 && nl < NITRO_LEVELS.length);
                 const hasBoostFake = bm >= 0 && bm < BOOST_ICONS.length;
                 const wantedFlags = storedData.badgeFlags ?? 0;
 
