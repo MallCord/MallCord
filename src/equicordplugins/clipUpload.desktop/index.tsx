@@ -38,7 +38,7 @@ const ctxMenuPatch: NavContextMenuPatchCallback = (children, props) => {
 export default definePlugin({
     name: "ClipUpload",
     description: "Adds a button to upload a local video file as a Discord clip.",
-    authors: [MallCordDevs.qdnx, MallCordDevs.BachLe2000],
+    authors: [MallCordDevs.qdnx, MallCordDevs.BachLe2000, MallCordDevs.pandaptable],
     tags: ["Media", "Utility"],
 
     patches: [
