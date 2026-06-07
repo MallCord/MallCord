@@ -1,7 +1,7 @@
 {
     "name": "mallcord",
     "private": "true",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "A vaporwave-inspired Discord client mod",
     "homepage": "https://github.com/MallCord/MallCord#readme",
     "bugs": {
