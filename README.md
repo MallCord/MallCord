@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
 [![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
-[![Discord](https://img.shields.io/badge/Discord-join-b967ff?style=flat&logo=discord&logoColor=white)](https://discord.gg/VBAJFf6fY6)
+[![Discord](https://img.shields.io/badge/Discord-server%20got%20termed-b967ff?style=flat&logo=discord&logoColor=white)](#)
 
 > aesthetic vibes for your client.
 
@@ -80,9 +80,7 @@ Note: Firefox extension zip requires Firefox for developers
 
 ## Support
 
-Need help, want to report a bug, or just hang out? Join the MallCord Discord server:
-
-**https://discord.gg/VBAJFf6fY6**
+our server got termed without a reason
 
 ## Credits
 
