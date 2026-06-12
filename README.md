@@ -10,8 +10,8 @@
 [Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
-> [!WARNING]
-> **Sharp (unfamiliardev)**, the main developer, is 50/50 on leaving the project. Development will slow down — expect roughly one commit every couple of days. The project isn't dead, just quiet for now.
+> [!IMPORTANT]
+> **Sharp (unfamiliardev) has left the project.** MallCord will either be picked up by other contributors or archived until someone wants to take it over. If you're interested in maintaining it, reach out to Sharp on Discord: **oz5u**
 
 ## Installing MallCord
 
