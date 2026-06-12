@@ -20,6 +20,7 @@ import { sendBotMessage } from "@api/Commands";
 import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings } from "@api/Settings";
 import { getUserSettingLazy } from "@api/UserSettings";
+import { Button } from "@components/Button";
 import { Card } from "@components/Card";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
@@ -41,7 +42,7 @@ import definePlugin from "@utils/types";
 import { checkForUpdates, isOutdated, update } from "@utils/updater";
 import { RenderModalProps } from "@vencord/discord-types";
 import { CloudUploadPlatform } from "@vencord/discord-types/enums";
-import { Alerts, Button, ChannelStore, CloudUploader, ConfirmModal, Constants, GuildMemberStore, openModal, Parser, PermissionsBits, PermissionStore, RelationshipStore, RestAPI, SelectedChannelStore, showToast, SnowflakeUtils, Text, Toasts, UserStore } from "@webpack/common";
+import { Alerts, ChannelStore, CloudUploader, ConfirmModal, Constants, GuildMemberStore, openModal, Parser, PermissionsBits, PermissionStore, RelationshipStore, RestAPI, SelectedChannelStore, showToast, SnowflakeUtils, Text, Toasts, UserStore } from "@webpack/common";
 import { JSX } from "react";
 
 import plugins, { PluginMeta } from "~plugins";
@@ -443,7 +444,7 @@ export default definePlugin({
             buttons.push(
                 <Button
                     key="vc-update"
-                    color={Button.Colors.GREEN}
+                    variant="positive"
                     onClick={async () => {
                         try {
                             if (await forceUpdate())
@@ -466,14 +467,14 @@ export default definePlugin({
                 buttons.push(
                     <Button
                         key="vc-dbg"
-                        color={Button.Colors.PRIMARY}
+                        variant="secondary"
                         onClick={async () => sendMessage(props.channel.id, { content: await generateDebugInfoMessage() })}
                     >
                         Run /mallcord-debug
                     </Button>,
                     <Button
                         key="vc-plg-list"
-                        color={Button.Colors.PRIMARY}
+                        variant="secondary"
                         onClick={async () => {
                             const pluginList = generatePluginList();
                             if (typeof pluginList === "string") {
@@ -493,6 +494,7 @@ export default definePlugin({
                     </Button>
                 );
             }
+        }
 
             if (mallcordSupport) {
                 const match = CodeBlockRe.exec(props.message.content || props.message.embeds[0]?.rawDescription || "");
@@ -515,12 +517,11 @@ export default definePlugin({
                                     new Logger(this.name).error("Error while running snippet:", e);
                                     showToast("Failed to run snippet :(", Toasts.Type.FAILURE);
                                 }
-                            }}
-                        >
-                            Run Snippet
-                        </Button>
-                    );
-                }
+                        }}
+                    >
+                        Run Snippet
+                    </Button>
+                );
             }
         }
 

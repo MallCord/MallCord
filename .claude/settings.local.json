@@ -21,7 +21,9 @@
       "WebFetch(domain:github.com)",
       "Bash(curl -s \"https://raw.githubusercontent.com/TestcordDev/TestCord/main/src/testcordplugins/FakeUserSwitcher/index.tsx\")",
       "Bash(sed -n '430,470p' /tmp/fus_index.tsx)",
-      "Bash(awk 'NR>=50 && NR<=70')"
+      "Bash(awk 'NR>=50 && NR<=70')",
+      "WebFetch(domain:discordresources.com)",
+      "WebFetch(domain:x.com)"
     ]
   }
 }
