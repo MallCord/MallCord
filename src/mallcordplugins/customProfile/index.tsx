@@ -206,6 +206,13 @@ interface CustomProfileData {
     copiedUserId?: string;
 }
 
+interface SavedPreset {
+    name: string;
+    data: CustomProfileData;
+}
+
+const DS_PRESETS = "customProfile_presets";
+
 const LS_KEY_DATA = "MallCordCP_data";
 const LS_KEY_ENABLED = "MallCordCP_enabled";
 const DS_ALL_DATA = "customProfile_allData";
@@ -224,6 +231,10 @@ let _trueOriginalUser: any = null;
 let _dataVersion: number = 0;
 let allAccountsData: Record<string, CustomProfileData> = {};
 let allAccountsEnabled: Record<string, boolean> = {};
+// presets: keyed by accountId → array of saved presets
+let allPresetsData: Record<string, SavedPreset[]> = {};
+
+const LS_PRESETS = "MallCordCP_presets";
 
 function saveDataSync(data: CustomProfileData, enabled: boolean) {
     try {
@@ -237,6 +248,21 @@ function saveAllDataSync() {
         localStorage.setItem(LS_ALL_DATA, JSON.stringify(allAccountsData));
         localStorage.setItem(LS_ALL_ENABLED, JSON.stringify(allAccountsEnabled));
     } catch { }
+}
+
+function savePresetsSync() {
+    try {
+        localStorage.setItem(LS_PRESETS, JSON.stringify(allPresetsData));
+    } catch { }
+}
+
+function loadPresetsSync() {
+    try {
+        const raw = localStorage.getItem(LS_PRESETS);
+        if (raw) {
+            try { allPresetsData = JSON.parse(raw); } catch { allPresetsData = {}; }
+        }
+    } catch { allPresetsData = {}; }
 }
 
 function syncCurrentUserData() {
@@ -293,6 +319,7 @@ function onAccountSwitch() {
 }
 
 loadDataSync();
+loadPresetsSync();
 
 const HIDE_STYLE_ID = "cp-hide-during-load";
 function injectHideStyle() {
@@ -348,21 +375,27 @@ async function loadData() {
             syncCurrentUserData();
             saveAllDataSync();
             saveDataSync(storedData, isEnabled);
-            return;
+        } else {
+            const d = await DataStore.get(DS_KEY) as CustomProfileData | null;
+            const e = await DataStore.get(DS_ENABLED) as boolean | null;
+            if (d !== null) storedData = d;
+            if (e !== null) isEnabled = e === true;
+            const myId = AuthenticationStore?.getId?.();
+            if (myId && storedData && Object.keys(storedData).length > 0) {
+                allAccountsData[myId] = storedData;
+                allAccountsEnabled[myId] = isEnabled;
+                DataStore.set(DS_ALL_DATA, allAccountsData).catch(() => { });
+                DataStore.set(DS_ALL_ENABLED, allAccountsEnabled).catch(() => { });
+                saveAllDataSync();
+            }
+            saveDataSync(storedData, isEnabled);
         }
-        const d = await DataStore.get(DS_KEY) as CustomProfileData | null;
-        const e = await DataStore.get(DS_ENABLED) as boolean | null;
-        if (d !== null) storedData = d;
-        if (e !== null) isEnabled = e === true;
-        const myId = AuthenticationStore?.getId?.();
-        if (myId && storedData && Object.keys(storedData).length > 0) {
-            allAccountsData[myId] = storedData;
-            allAccountsEnabled[myId] = isEnabled;
-            DataStore.set(DS_ALL_DATA, allAccountsData).catch(() => { });
-            DataStore.set(DS_ALL_ENABLED, allAccountsEnabled).catch(() => { });
-            saveAllDataSync();
+        // load presets from DataStore
+        const presetsData = await DataStore.get(DS_PRESETS) as Record<string, SavedPreset[]> | null;
+        if (presetsData && typeof presetsData === "object") {
+            allPresetsData = presetsData;
+            savePresetsSync();
         }
-        saveDataSync(storedData, isEnabled);
     } catch (err) { }
 }
 
@@ -662,6 +695,96 @@ function TrashIcon() {
 function SaveIcon() {
     return <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm3-10H5V5h10v4Z" /></svg>;
 }
+function BookmarkIcon() {
+    return <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17 2H7a2 2 0 0 0-2 2v18l7-3 7 3V4a2 2 0 0 0-2-2Z" /></svg>;
+}
+function AddPresetIcon() {
+    return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>;
+}
+
+function PresetsBar({ accountId, currentData, onLoad }: {
+    accountId: string;
+    currentData: CustomProfileData;
+    onLoad: (data: CustomProfileData) => void;
+}) {
+    const [presets, setPresets] = React.useState<SavedPreset[]>(() => allPresetsData[accountId] ?? []);
+    const [naming, setNaming] = React.useState(false);
+    const [newName, setNewName] = React.useState("");
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+        setPresets(allPresetsData[accountId] ?? []);
+        setNaming(false);
+        setNewName("");
+    }, [accountId]);
+
+    function savePreset() {
+        const name = newName.trim();
+        if (!name) return;
+        const updated: SavedPreset[] = [...presets, { name, data: { ...currentData } }];
+        allPresetsData[accountId] = updated;
+        DataStore.set(DS_PRESETS, allPresetsData).catch(() => { });
+        savePresetsSync();
+        setPresets(updated);
+        setNaming(false);
+        setNewName("");
+    }
+
+    function deletePreset(idx: number) {
+        const updated = presets.filter((_, i) => i !== idx);
+        allPresetsData[accountId] = updated;
+        DataStore.set(DS_PRESETS, allPresetsData).catch(() => { });
+        savePresetsSync();
+        setPresets(updated);
+    }
+
+    if (presets.length === 0 && !naming) {
+        return (
+            <div className="cp-presets-bar cp-presets-bar--empty">
+                <BookmarkIcon />
+                <span className="cp-presets-hint">{t("No saved presets")}</span>
+                <button className="cp-preset-add" onClick={() => { setNaming(true); setTimeout(() => inputRef.current?.focus(), 50); }} title={t("Save current as preset")}>
+                    <AddPresetIcon /><span>{t("Save preset")}</span>
+                </button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="cp-presets-bar">
+            <div className="cp-presets-scroll">
+                {presets.map((p, i) => (
+                    <div key={i} className="cp-preset-chip" title={t("Click to load")} onClick={() => onLoad({ ...p.data })}>
+                        <BookmarkIcon />
+                        <span className="cp-preset-name">{p.name}</span>
+                        <button className="cp-preset-del" title={t("Delete preset")} onClick={e => { e.stopPropagation(); deletePreset(i); }}>
+                            <CloseIcon />
+                        </button>
+                    </div>
+                ))}
+                {naming ? (
+                    <div className="cp-preset-naming">
+                        <input
+                            ref={inputRef}
+                            className="cp-input cp-preset-name-input"
+                            placeholder={t("Preset name...")}
+                            value={newName}
+                            onChange={e => setNewName(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") savePreset(); if (e.key === "Escape") { setNaming(false); setNewName(""); } }}
+                            maxLength={32}
+                        />
+                        <button className="cp-btn cp-btn-primary cp-preset-confirm" onClick={savePreset} title={t("Confirm")}><SaveIcon /></button>
+                        <button className="cp-clear-btn" onClick={() => { setNaming(false); setNewName(""); }} title={t("Cancel")}><CloseIcon /></button>
+                    </div>
+                ) : (
+                    <button className="cp-preset-add" onClick={() => { setNaming(true); setTimeout(() => inputRef.current?.focus(), 50); }} title={t("Save current as preset")}>
+                        <AddPresetIcon /><span>{t("Save preset")}</span>
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
 
 function SectionLabel({ children, style }: { children: React.ReactNode; style?: React.CSSProperties; }) {
     return <div className="cp-section-label" style={style}>{children}</div>;
@@ -767,6 +890,30 @@ function BadgePicker({ selected, onChange, nitroType, onNitroType, boostLevel, o
                     icon="https://cdn.discordapp.com/badge-icons/ca105ad9cfc8580c765101d17bbb2323.png"
                     active={customIds.includes("meadow")}
                     onClick={() => onCustomIds(customIds.includes("meadow") ? customIds.filter(x => x !== "meadow") : [...customIds, "meadow"])} />
+                <BadgeBtn label={t("Gifting — Patron")}
+                    icon="https://i.imgur.com/tI4GCxR.png"
+                    active={customIds.includes("gift_patron")}
+                    onClick={() => onCustomIds(customIds.includes("gift_patron") ? customIds.filter(x => x !== "gift_patron") : [...customIds, "gift_patron"])} />
+                <BadgeBtn label={t("Gifting — Champion")}
+                    icon="https://i.imgur.com/Jynm4dV.png"
+                    active={customIds.includes("gift_champion")}
+                    onClick={() => onCustomIds(customIds.includes("gift_champion") ? customIds.filter(x => x !== "gift_champion") : [...customIds, "gift_champion"])} />
+                <BadgeBtn label={t("Gifting — Luminary")}
+                    icon="https://i.imgur.com/3GRyXIR.png"
+                    active={customIds.includes("gift_luminary")}
+                    onClick={() => onCustomIds(customIds.includes("gift_luminary") ? customIds.filter(x => x !== "gift_luminary") : [...customIds, "gift_luminary"])} />
+                <BadgeBtn label={t("Gifting — Icon")}
+                    icon="https://i.imgur.com/chM1tvZ.png"
+                    active={customIds.includes("gift_icon")}
+                    onClick={() => onCustomIds(customIds.includes("gift_icon") ? customIds.filter(x => x !== "gift_icon") : [...customIds, "gift_icon"])} />
+                <BadgeBtn label={t("Gifting — Hero")}
+                    icon="https://i.imgur.com/7bJJJWl.png"
+                    active={customIds.includes("gift_hero")}
+                    onClick={() => onCustomIds(customIds.includes("gift_hero") ? customIds.filter(x => x !== "gift_hero") : [...customIds, "gift_hero"])} />
+                <BadgeBtn label={t("Gifting — Legendary")}
+                    icon="https://i.imgur.com/gQg96nV.png"
+                    active={customIds.includes("gift_legendary")}
+                    onClick={() => onCustomIds(customIds.includes("gift_legendary") ? customIds.filter(x => x !== "gift_legendary") : [...customIds, "gift_legendary"])} />
             </div>
             {hasOldName && (
                 <div className="cp-field" style={{ marginTop: 6 }}>
@@ -817,7 +964,6 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
     const boostLevel = data.boostMonths ?? -1;
     const customIds = data.customBadgeIds ?? [];
     const oldName = data.oldName ?? "";
-
     const accounts = React.useMemo(() => {
         try {
             const MAS = (window as any).Vencord?.Webpack?.findByProps?.("getUsers", "getValidUsers");
@@ -844,6 +990,10 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
 
     function set<K extends keyof CustomProfileData>(key: K, val: CustomProfileData[K]) {
         setData(d => ({ ...d, [key]: val }));
+    }
+
+    function loadPreset(presetData: CustomProfileData) {
+        setData({ ...presetData });
     }
 
     async function save() {
@@ -945,6 +1095,9 @@ function CustomProfileModal({ rootProps }: { rootProps: any; }) {
                 </div>
                 <ModalCloseButton onClick={rootProps.onClose} />
             </ModalHeader>
+            <div className="cp-presets-wrapper">
+                <PresetsBar accountId={selectedAccountId} currentData={data} onLoad={loadPreset} />
+            </div>
             <ModalContent className="cp-content">
                 <Field label={t("Username")} value={data.username ?? ""} placeholder="my_username_00" onChange={v => set("username", v)} />
                 <Field label={t("Display name")} value={data.globalName ?? ""} placeholder="My Name" onChange={v => set("globalName", v)} />
@@ -1039,11 +1192,61 @@ function CustomProfileButton() {
     return <HeaderBarButton icon={() => <EditIcon size={18} />} tooltip="Custom Profile" onClick={() => openModal(props => <CustomProfileModal rootProps={props} />)} />;
 }
 
-// ── Simple badge builder — uses Discord's native tooltip via description string ─
+// ── Badge tooltip component — renders the new Discord-style big tooltip ────────
+function BadgeTooltipContent({ name, rarity, subtitle, icon }: { name: string; rarity?: string; subtitle?: string; icon: string; }) {
+    const rarityColor = rarity === "MYTHIC" ? "#b77ee0" : rarity === "RARE" ? "#5865f2" : "#99aab5";
+    const rarityBg = rarity === "MYTHIC" ? "rgba(183,126,224,0.15)" : rarity === "RARE" ? "rgba(88,101,242,0.15)" : "rgba(153,170,181,0.1)";
+    const rarityIcon = rarity === "MYTHIC"
+        ? <path fill="currentColor" d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" />
+        : <path fill="currentColor" d="M10.16 4.06a2.13 2.13 0 0 1 3.68 0l8 13.77c.81 1.41-.2 3.17-1.84 3.17H4a2.11 2.11 0 0 1-1.84-3.17l8-13.77Z" />;
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "6px 4px", textAlign: "center" }}>
+            <img src={icon} alt="" style={{ width: 48, height: 48, objectFit: "contain", borderRadius: "50%" }} />
+            {rarity && (
+                <div style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const,
+                    letterSpacing: "0.05em", color: rarityColor,
+                    background: rarityBg, borderRadius: 20,
+                    padding: "3px 10px", border: `1px solid ${rarityColor}40`,
+                }}>
+                    <svg width="10" height="10" fill="none" viewBox="0 0 24 24">{rarityIcon}</svg>
+                    {rarity}
+                </div>
+            )}
+            <div style={{ fontWeight: 700, fontSize: 15, color: "#fff", lineHeight: 1.2 }}>{name}</div>
+            {subtitle && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: -4 }}>{subtitle}</div>}
+        </div>
+    );
+}
+
+// ── Badge builder ─────────────────────────────────────────────────────────────
 const badgeStyle: React.CSSProperties = { borderRadius: "50%", width: "22px", height: "22px" };
 
-function mkBadge(id: string, name: string, icon: string): ProfileBadge {
-    return { id, description: name, iconSrc: icon, position: BadgePosition.START, props: { style: badgeStyle } };
+function mkBadge(id: string, name: string, icon: string, rarity?: string, subtitle?: string): ProfileBadge {
+    if (!rarity && !subtitle) {
+        return { id, description: name, iconSrc: icon, position: BadgePosition.START, props: { style: badgeStyle } };
+    }
+
+    const Tooltip = (Vencord as any).Webpack.Common?.Tooltip;
+    if (!Tooltip) {
+        return { id, description: subtitle ? `${name}\n${subtitle}` : name, iconSrc: icon, position: BadgePosition.START, props: { style: badgeStyle } };
+    }
+
+    return {
+        id,
+        description: name,
+        iconSrc: icon,
+        position: BadgePosition.START,
+        component: () => (
+            <Tooltip text={<BadgeTooltipContent name={name} rarity={rarity} subtitle={subtitle} icon={icon} />}>
+                {(tooltipProps: any) => (
+                    <img {...tooltipProps} src={icon} alt={name} style={{ ...badgeStyle, cursor: "pointer" }} />
+                )}
+            </Tooltip>
+        ),
+    };
 }
 
 export default definePlugin({
@@ -1624,59 +1827,87 @@ export default definePlugin({
 
                 const badgeList: ProfileBadge[] = [];
 
+                // 1. Discord Staff
                 if (wantedFlags & FLAG.STAFF)
                     badgeList.push(mkBadge("cp-badge-0", "Discord Staff", "https://cdn.discordapp.com/badge-icons/5e74e9b61934fc1f67c65515d1f7e60d.png"));
 
+                // 2. Partner
                 if (wantedFlags & FLAG.PARTNER)
                     badgeList.push(mkBadge("cp-badge-1", "Partnered Server Owner", "https://cdn.discordapp.com/badge-icons/3f9748e53446a137a052f3454e2de41e.png"));
 
+                // 3. Nitro
                 if (hasNitroFake)
-                    badgeList.push(mkBadge("cp-badge-2", `Nitro ${NITRO_LEVELS[nl].label.split(" ")[0]}`, NITRO_LEVELS[nl].icon));
+                    badgeList.push(mkBadge("cp-badge-2", `Nitro ${NITRO_LEVELS[nl].label.split(" ")[0]}`, NITRO_LEVELS[nl].icon, "RARE", "Subscriber since 10/22/21"));
 
+                // 4. HypeSquad Events
                 if (wantedFlags & FLAG.HYPESQUAD)
-                    badgeList.push(mkBadge("cp-badge-3", "HypeSquad Events", "https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png"));
+                    badgeList.push(mkBadge("cp-badge-3", "HypeSquad Events", "https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png", "RARE"));
 
+                // 5. Bug Hunter 2
                 if (wantedFlags & FLAG.BUG_HUNTER_2)
-                    badgeList.push(mkBadge("cp-badge-4", "Pro Bug Hunter", "https://cdn.discordapp.com/badge-icons/848f79194d4be5ff5f81505cbd0ce1e6.png"));
+                    badgeList.push(mkBadge("cp-badge-4", "Pro Bug Hunter", "https://cdn.discordapp.com/badge-icons/848f79194d4be5ff5f81505cbd0ce1e6.png", "RARE"));
 
+                // 6. House Badges
                 if (wantedFlags & FLAG.BALANCE)
-                    badgeList.push(mkBadge("cp-badge-5", "HypeSquad Balance", "https://cdn.discordapp.com/badge-icons/3aa41de486fa12454c3761e8e223442e.png"));
+                    badgeList.push(mkBadge("cp-badge-5", "HypeSquad Balance", "https://cdn.discordapp.com/badge-icons/3aa41de486fa12454c3761e8e223442e.png", "RARE"));
                 if (wantedFlags & FLAG.BRAVERY)
-                    badgeList.push(mkBadge("cp-badge-6", "HypeSquad Bravery", "https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png"));
+                    badgeList.push(mkBadge("cp-badge-6", "HypeSquad Bravery", "https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png", "RARE"));
                 if (wantedFlags & FLAG.BRILLIANCE)
-                    badgeList.push(mkBadge("cp-badge-7", "HypeSquad Brilliance", "https://cdn.discordapp.com/badge-icons/011940fd013da3f7fb926e4a1cd2e618.png"));
+                    badgeList.push(mkBadge("cp-badge-7", "HypeSquad Brilliance", "https://cdn.discordapp.com/badge-icons/011940fd013da3f7fb926e4a1cd2e618.png", "RARE"));
 
+                // 7. Bug Hunter 1
                 if (wantedFlags & FLAG.BUG_HUNTER_1)
-                    badgeList.push(mkBadge("cp-badge-8", "Bug Hunter", "https://cdn.discordapp.com/badge-icons/2717692c7dca7289b35297368a940dd0.png"));
+                    badgeList.push(mkBadge("cp-badge-8", "Bug Hunter", "https://cdn.discordapp.com/badge-icons/2717692c7dca7289b35297368a940dd0.png", "RARE"));
 
+                // 8. Verified Developer
                 if (wantedFlags & FLAG.DEV_VERIFIED)
                     badgeList.push(mkBadge("cp-badge-9", "Early Verified Bot Developer", "https://cdn.discordapp.com/badge-icons/6df5892e0f35b051f8b61eace34f4967.png"));
 
+                // 9. Moderator Alumni
                 if (wantedFlags & FLAG.MOD_ALUMNI)
                     badgeList.push(mkBadge("cp-badge-10", "Moderator Program Alumni", "https://cdn.discordapp.com/badge-icons/fee1624003e2fee35cb398e125dc479b.png"));
 
+                // 10. Early Supporter
                 if (wantedFlags & FLAG.EARLY_SUPPORTER)
                     badgeList.push(mkBadge("cp-badge-11", "Early Supporter", "https://cdn.discordapp.com/badge-icons/7060786766c9c840eb3019e725d2b358.png"));
 
+                // 11. Server Boost
                 if (hasBoostFake)
-                    badgeList.push(mkBadge("cp-badge-12", `Server Booster — ${BOOST_LABELS[bm]}`, BOOST_ICONS[bm]));
+                    badgeList.push(mkBadge("cp-badge-12", "Server Booster", BOOST_ICONS[bm], "RARE", BOOST_LABELS[bm]));
 
+                // 12. Active Developer
                 if (wantedFlags & FLAG.ACTIVE_DEVELOPER)
                     badgeList.push(mkBadge("cp-badge-13", "Active Developer", "https://cdn.discordapp.com/badge-icons/6bdc42827a38498929a4920da12695d9.png"));
 
+                // 13. Legacy Username
                 if (storedData.customBadgeIds?.includes("oldname")) {
-                    const oldNameText = storedData.oldName ? `Old username: ${storedData.oldName}` : "Legacy Username";
-                    badgeList.push(mkBadge("cp-badge-14", oldNameText, OLD_NAME_BADGE_ICON));
+                    const oldNameText = storedData.oldName || "OldUser#0000";
+                    badgeList.push(mkBadge("cp-badge-14", "Legacy Username", OLD_NAME_BADGE_ICON, undefined, oldNameText));
                 }
 
+                // 14. Quests
                 if (storedData.customBadgeIds?.includes("quest"))
                     badgeList.push(mkBadge("cp-badge-15", "Quests", "https://cdn.discordapp.com/badge-icons/7d9ae358c8c5e118768335dbe68b4fb8.png"));
 
+                // 15. Orbs
                 if (storedData.customBadgeIds?.includes("orbs"))
                     badgeList.push(mkBadge("cp-badge-16", "Orbs Apprentice", "https://cdn.discordapp.com/badge-icons/83d8a1eb09a8d64e59233eec5d4d5c2d.png"));
 
+                // 16. Last Meadow
                 if (storedData.customBadgeIds?.includes("meadow"))
-                    badgeList.push(mkBadge("cp-badge-17", "Last Meadow", "https://cdn.discordapp.com/badge-icons/ca105ad9cfc8580c765101d17bbb2323.png"));
+                    badgeList.push(mkBadge("cp-badge-17", "Last Meadow", "https://cdn.discordapp.com/badge-icons/ca105ad9cfc8580c765101d17bbb2323.png", "RARE", "Level 100 Reached"));
+
+                // 17. Gifting badges
+                const giftStyle: React.CSSProperties = { width: "24px", height: "24px", objectFit: "contain", mixBlendMode: "screen" as any, borderRadius: 0 };
+                const mkGift = (id: string, name: string, icon: string): ProfileBadge => ({
+                    id, description: name, iconSrc: icon, position: BadgePosition.START, props: { style: giftStyle }
+                });
+                if (storedData.customBadgeIds?.includes("gift_patron")) badgeList.push(mkGift("cp-badge-18", "Gifting Patron", "https://i.imgur.com/tI4GCxR.png"));
+                if (storedData.customBadgeIds?.includes("gift_champion")) badgeList.push(mkGift("cp-badge-19", "Gifting Champion", "https://i.imgur.com/Jynm4dV.png"));
+                if (storedData.customBadgeIds?.includes("gift_luminary")) badgeList.push(mkGift("cp-badge-20", "Gifting Luminary", "https://i.imgur.com/3GRyXIR.png"));
+                if (storedData.customBadgeIds?.includes("gift_icon")) badgeList.push(mkGift("cp-badge-21", "Gifting Icon", "https://i.imgur.com/chM1tvZ.png"));
+                if (storedData.customBadgeIds?.includes("gift_hero")) badgeList.push(mkGift("cp-badge-22", "Gifting Hero", "https://i.imgur.com/7bJJJWl.png"));
+                if (storedData.customBadgeIds?.includes("gift_legendary")) badgeList.push(mkGift("cp-badge-23", "Gifting Legendary", "https://i.imgur.com/gQg96nV.png"));
 
                 badges.push(...badgeList);
                 return badges;
