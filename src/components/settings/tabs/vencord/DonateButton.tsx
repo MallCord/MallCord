@@ -5,7 +5,7 @@
  */
 
 import { Flex } from "@components/Flex";
-import { DonateButton, InviteButton } from "@components/settings/DonateButton";
+import { DonateButton } from "@components/settings/DonateButton";
 import BadgeAPI from "@plugins/_api/badges";
 import { DONOR_ROLE_ID, VC_GUILD_ID } from "@utils/constants";
 import { GuildMemberStore } from "@webpack/common";
@@ -21,9 +21,6 @@ export function DonateButtonComponent({ donated = false }) {
             <DonateButton
                 mallcord={true}
                 className={!donated ? "vc-donate-support-button" : ""}
-                style={{ marginTop: "1em" }} />
-            <InviteButton
-                className={!donated ? "vc-invite-support-button" : ""}
                 style={{ marginTop: "1em" }} />
         </Flex>
     );

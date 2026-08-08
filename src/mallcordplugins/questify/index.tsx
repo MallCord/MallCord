@@ -170,7 +170,7 @@ export default definePlugin({
             find: '("ActivityStatus"),',
             predicate: () => getQuestifySettings().disableQuestsEverything || getQuestifySettings().disableMembersListPromo,
             replacement: {
-                match: /(,hasQuest:)(?=\i=!1)/,
+                match: /,hasQuest:(?=\i=!1)/,
                 replace: ",questifyInvalid1:"
             }
         },
@@ -202,7 +202,7 @@ export default definePlugin({
             predicate: () => getQuestifySettings().disableQuestsEverything,
             replacement: [
                 {
-                    match: /(?<="family-center"\):null,)/,
+                    match: /(?<="family-center"\)(?:&&undefined)?:null,)/,
                     replace: "null&&"
                 }
             ]
@@ -212,8 +212,8 @@ export default definePlugin({
             find: "QUEST_HOME)},[]),",
             predicate: () => !getQuestifySettings().disableQuestsEverything && getQuestifySettings().disableSponsoredBanner,
             replacement: {
-                match: /(?<=,{questHomeHero:(\i),isLoading:(\i)}=.{0,300}?ORBS_BALANCE_MENU}\)},\[\]\);)/,
-                replace: "$1=null;$2=false;"
+                match: /(?<=,{questHomeHero:(\i),isLoading:(\i),confirmedEmpty:(\i)}=.{0,300}?ORBS_BALANCE_MENU}\)},\[\]\);)/,
+                replace: "$1=null;$2=false;$3=true;"
             }
         },
         {
@@ -230,7 +230,7 @@ export default definePlugin({
         },
         {
             // Overrides the account panel Quest popup and progress display.
-            find: "QUESTS_BAR,questId",
+            find: "collapsed-with-rewards\":\"collapsed-without-rewards",
             predicate: () => getQuestifySettings().disableAccountPanelPromo || !getQuestifySettings().disableAccountPanelQuestProgress,
             replacement: {
                 match: /(?<=function\(\){)(let (\i)=\(0,\i.\i\)\(\);)/,
@@ -283,7 +283,7 @@ export default definePlugin({
                     replace: "$1+($2>=1e6?0.8:$2>=1e3?0.4:0)"
                 },
                 {
-                    match: /(?<=children:\i.to\(\i=>`\${\i)(.toFixed\(0\))/,
+                    match: /(?<=children:\i.to\(\i=>`\${\i).toFixed\(0\)/,
                     replace: ".toLocaleString(undefined,{maximumFractionDigits:0})"
                 }
             ]
@@ -338,7 +338,7 @@ export default definePlugin({
             replacement: [
                 {
                     // Overwrite button props for UNENROLLED Quests.
-                    match: /(?<=onClick:(\(\)=>{.[^}]+}),text:(\i),icon:\i,fullWidth:!0)/,
+                    match: /(?<=onClick:\(\)=>{\i\?\.\(\),\i\(\)},text:\i,icon:\i,iconPosition:\i,fullWidth:!0)/,
                     replace: ",...($self.getQuestButtonProps(arguments[0])??{})"
                 },
                 {
@@ -350,7 +350,7 @@ export default definePlugin({
         },
         {
             // Overwrite button props for Quest bar.
-            find: "QUESTS_BAR,questId",
+            find: "collapsed-with-rewards\":\"collapsed-without-rewards",
             predicate: () => !getQuestifySettings().disableQuestsEverything && hasEnabledAutoCompleteQuestTypes(),
             replacement: {
                 match: /(?<=SELECT&&!\i&&!\i,(\i)=null;)(return )(\i\?\i=\(0,\i.\i\)\(\i,{quest:(\i))/,
@@ -367,55 +367,34 @@ export default definePlugin({
             }
         },
         {
-            find: "return`quest-tile-",
+            find: "QUEST_HOME_TILE_HEADER_WATCH_VIDEO})},",
             group: true,
             predicate: () => !getQuestifySettings().disableQuestsEverything,
             replacement: [
                 {
-                    // Alias the selected platform dropdown state before exposing CTA buttons.
-                    match: /(?<=var \i;)(?=let \i,\i,{quest:\i,questContent:)/,
-                    replace: "let questifySelectedPlatformDropdownVisible;"
+                    // Prefer the auto-complete CTA over the console platform selector.
+                    match: /(\i===\i\.\i\.ENROLLED&&)(?=\(0,\i\.\i\)\((\i)\))/,
+                    replace: "$1!$self.canAutoCompleteQuest($2)&&"
                 },
                 {
-                    // Prevent the platform selector if the Quest is auto-completable.
-                    match: /(?<=ACCEPTED,\i=)(?=\i&&)/,
-                    replace: "!$self.canAutoCompleteQuest(arguments[0].quest)&&"
+                    // Prefer the auto-complete CTA over the desktop-only external-link row.
+                    match: /(\(\i===\i\.\i\.ENROLLED\|\|\i===\i\.\i\.INCOMPLETE\)&&)(?=\(0,\i\.\i\)\((\i)\))/,
+                    replace: "$1!$self.canAutoCompleteQuest($2)&&"
                 },
                 {
-                    // Prevent the platform selector if the Quest is auto-completable.
-                    match: /(?<=SELECT,\i=)(?=\i&&)/,
-                    replace: "questifySelectedPlatformDropdownVisible=!$self.canAutoCompleteQuest(arguments[0].quest)&&"
+                    // Let completed/claimed Quests with CTAs use the generalized CTA row.
+                    match: /(\(\i===\i\.\i\.COMPLETED\|\|\i===\i\.\i\.CLAIMED\)&&)(?=\(0,\i\.\i\)\((\i)\))/,
+                    replace: "$1!$2.config.ctaConfig&&"
                 },
                 {
-                    // Always expose the CTA button when available instead of only for videos and activities,
-                    // unless the selected platform dropdown is already taking the secondary slot.
-                    match: /(?<=wrap:!1,children:\[)(\i&&[^?]+)/,
-                    replace: "((!!arguments[0].quest.config.ctaConfig&&!questifySelectedPlatformDropdownVisible)||($1))"
-                },
-                {
-                    // Let completed/claimed expired Quests with CTAs use the CTA-aware completed branch.
-                    match: /(return\()(?=\i.enabled&&\i===\i\.\i\.EXPIRED_CLAIMABLE&&\i\.\i\.has\(\i\))/,
-                    replace: "$1!arguments[0].quest.config.ctaConfig&&"
-                },
-                {
-                    // Let completed/claimed expired Quests with CTAs use the CTA-aware completed branch.
-                    match: /(?<=\):\i\?\i=)(\i)(?=\?\(0,\i\.jsx\)\(\i,\{quest:\i,sourceQuestContent:\i,onClick:\i,text:\i\}\):)/,
-                    replace: "(arguments[0].quest.config.ctaConfig||$1)"
-                },
-                {
-                    // Force the CTA-aware complete branch.
-                    match: /(?<=analyticsCtxQuestContentRowIndex:\i}\)}\):\i&&\i)(.{0,200}?fullWidth:!0}\)}\):)(\i.enabled.{0,50}?CLAIMED\)&&\i.\i.has\(\i\))(\?\i=)(\i)/,
-                    replace: "&&false$1((arguments[0].quest.config.ctaConfig&&arguments[0].quest.userStatus?.completedAt)||($2))$3(true||$4)"
-                },
-                {
-                    // Prefer the CTA + progress button branch when Questify can complete the Quest.
-                    match: /(?<="data-migration-pending":.{0,400}?enabledQuestStates.has\(\i\)\?)/,
-                    replace: "!$self.canAutoCompleteQuest(arguments[0].quest)&&"
+                    // Always expose the external CTA when the Quest has one configured.
+                    match: /(?<=wrap:!1,children:\[)(\i)(?=&&\(0,\i\.jsx\)\(\i,\{quest:(\i))/,
+                    replace: "($2.config.ctaConfig||$1)"
                 }
             ]
         },
         {
-            find: "EMBED_DESKTOP}),",
+            find: 'STEP_2_CLICKED_INTERNAL,"quest_embed_card_footer',
             group: true,
             predicate: () => !getQuestifySettings().disableQuestsEverything,
             replacement: [
@@ -437,7 +416,7 @@ export default definePlugin({
             ]
         },
         {
-            find: "return`quest-tile-",
+            find: "QUEST_HOME_TILE_HEADER_WATCH_VIDEO})},",
             group: true,
             predicate: () => !getQuestifySettings().disableQuestsEverything,
             replacement: [
@@ -508,7 +487,7 @@ export default definePlugin({
                 },
                 {
                     // If we already applied Questify's sort, skip further sorting.
-                    match: /(?<=\{sortMethod:(\i).{0,750}?return )((\i).sort)/,
+                    match: /(?<=\{sortMethod:(\i).{0,800}?return )((\i).sort)/,
                     replace: "$1===\"questify\"?$3:$2"
                 },
                 {
@@ -531,13 +510,24 @@ export default definePlugin({
             ]
         },
         {
+            // Allow non-shareable Quests to embed in chat and to have
+            // their share URLs copyable from the embed context menu.
+            find: "NOT_SHAREABLE}function",
+            group: true,
+            predicate: () => !getQuestifySettings().disableQuestsEverything,
+            replacement: {
+                match: /(?<=return )(?=\i.sharePolicy!==\i.\i.NOT_SHAREABLE)/,
+                replace: "true||"
+            }
+        },
+        {
             // Adds a maxDigits prop to the LowerBadge component which allows for not truncating, or for truncating at a specific threshold.
-            find: ".INTERACTIVE_TEXT_ACTIVE.css,shape",
+            find: ".BADGE_NOTIFICATION_BACKGROUND.css,disableColor",
             group: true,
             replacement: [
                 {
                     // Extracts the custom maxDigits prop.
-                    match: /(=>{let{count:\i,)/,
+                    match: /(\(\i\){let{count:\i,)/,
                     replace: "$1maxDigits,"
                 },
                 {

@@ -34,50 +34,5 @@ export default definePlugin({
                 }
             ]
         },
-        {
-            find: "#{intl::NO_GIF_FAVORITES_HOW_TO_FAVORITE}",
-            predicate: () => settings.store.keepOpen,
-            replacement: [
-                {
-                    match: /null!=\i&&\i\(\i\),/,
-                    replace: "$self.onGifSelect(),$&"
-                },
-                {
-                    match: /\i\.scrollIntoViewRect\(\{/,
-                    replace: "$self.shouldSuppressGifFocusScroll()||$&"
-                },
-                {
-                    match: /this.renderGIF\(\).{0,50}\]/,
-                    replace: "$&,onMouseDown:e=>{$self.shouldSuppressGifFocusScroll()&&e.preventDefault()}"
-                }
-            ]
-        },
-        {
-            find: "expression-picker-last-active-view",
-            replacement: {
-                match: /\i\.setState\(\{activeView:null/,
-                replace: "$self.consumeCloseSuppress()||$&"
-            }
-        },
     ],
-
-    onGifSelect() {
-        if (!settings.store.keepOpen) return;
-        closeSuppressCount = 2;
-    },
-
-    consumeCloseSuppress() {
-        if (!settings.store.keepOpen) {
-            closeSuppressCount = 0;
-            return false;
-        }
-
-        if (closeSuppressCount <= 0) return false;
-        closeSuppressCount--;
-        return true;
-    },
-
-    shouldSuppressGifFocusScroll() {
-        return settings.store.keepOpen;
-    }
 });

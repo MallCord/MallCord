@@ -146,7 +146,7 @@ async function generateDebugInfoMessage() {
 
     const info = {
         MallCord:
-            `v${VERSION} • [${gitHashShort}](<https://github.com/MallCord/MallCord/commit/${gitHash}>)` +
+            `v${VERSION} • [${gitHashShort}](<https://github.com/Equicord/Equicord/commit/${gitHash}>)` +
             `${IS_EQUIBOP ? "" : SettingsPlugin.getVersionInfo()} - ${Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
         Client: `${RELEASE_CHANNEL} ~ ${clientString}`,
         Platform: platformDisplay
@@ -319,6 +319,7 @@ export default definePlugin({
     description: "Helps us provide support to you",
     authors: [Devs.Ven],
     dependencies: ["UserSettingsAPI", "CommandsAPI", "MessageAccessoriesAPI"],
+    tags: ["Utility"],
 
     settings,
 

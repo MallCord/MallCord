@@ -15,8 +15,8 @@ import { Devs, MallCordDevs, GUILD_ID, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, 
 import { isAnyPluginDev } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { StandingState } from "@vencord/discord-types/enums";
-import { findByCodeLazy, findStoreLazy } from "@webpack";
-import { Alerts, ApplicationCommandIndexStore, NavigationRouter, React, SettingsRouter, UserGuildSettingsStore, UserStore, useStateFromStores, VoiceStateStore } from "@webpack/common";
+import { findByCodeLazy } from "@webpack";
+import { Alerts, ApplicationCommandIndexStore, NavigationRouter, React, SafetyHubStore, SettingsRouter, UserGuildSettingsStore, UserStore, useStateFromStores, VoiceStateStore } from "@webpack/common";
 import { ComponentType } from "react";
 
 import { PluginButtons } from "./pluginButtons";
@@ -28,7 +28,6 @@ migratePluginToSettings(true, "MallCordHelper", "GuildTagSettings", "disableAdop
 
 let clicked = false;
 
-const SafetyHubStore = findStoreLazy("SafetyHubStore");
 const fetchSafetyHub: () => Promise<void> = findByCodeLazy("SAFETY_HUB_FETCH_START");
 
 const StandingConfig: Record<number, { label: string; hoverColor: string; Icon: ComponentType<any>; }> = {
@@ -155,7 +154,8 @@ export default definePlugin({
         MallCordDevs.mart,
         MallCordDevs.omaw,
         Devs.Samwich,
-        Devs.AutumnVN
+        Devs.AutumnVN,
+        EquicordDevs.auggeeo
     ],
     required: true,
     settings,
@@ -178,7 +178,7 @@ export default definePlugin({
                 }
             ]
         },
-        // Fix a race condition?
+        // Fix a race condition
         {
             find: ".completeOperation(",
             replacement: {
@@ -186,11 +186,11 @@ export default definePlugin({
                 replace: "$2,$1"
             }
         },
-        // catch if it cant open
+        // Catch IndexedDB if it fails to open
         {
             find: "discarding speculative database",
             replacement: {
-                match: /await (\i)\((\i)\)(?=;.{0,15}this\.databases)/,
+                match: /await \i\(\i\)(?=;.{0,15}this\.databases)/,
                 replace: "$&.catch(()=>null)"
             }
         },
@@ -349,6 +349,16 @@ export default definePlugin({
             ],
             predicate: () => settings.store.hideVoiceIndicatorForMutedChannels,
         },
+        // Add opening profile functionality to some connections
+        {
+            find: "getPlatformUserUrl:",
+            replacement: [
+                {
+                    match: /name:("(?:Xbox|Epic Games)").{0,180}enabled:!0/g,
+                    replace: "$&,getPlatformUserUrl:e=>$self.getPlatformUrl($1, e)"
+                }
+            ]
+        },
     ],
     renderMessageAccessory(props) {
         return (
@@ -422,6 +432,16 @@ export default definePlugin({
             voiceState?.channelId === currentUserVoiceState?.channelId ||
             !UserGuildSettingsStore.isChannelMuted(guildId, voiceState?.channelId!)
         );
+    },
+    getPlatformUrl(platform, args) {
+        switch (platform) {
+            case "Xbox":
+                return `https://www.xbox.com/play/user/${encodeURIComponent(args.name)}`;
+            case "Epic Games":
+                return `https://store.epicgames.com/u/${encodeURIComponent(args.id)}`;
+            default:
+                return null;
+        }
     }
 });
 

@@ -19,8 +19,8 @@ import { Modal, openModal, showToast, useEffect, useMemo, UserProfileStore, useS
 
 import Plugins, { PluginMeta } from "~plugins";
 
-import { GithubButton, WebsiteButton } from "./LinkIconButton";
 import { PluginCard } from "./PluginCard";
+import { GithubButton, WebsiteButton } from "./PluginModalButtons";
 
 const cl = classNameFactory("vc-author-modal-");
 
@@ -55,7 +55,7 @@ function ContributorModal({ user, modalProps }: { user: User; modalProps: Render
             .sort((a, b) => Number(a.required ?? false) - Number(b.required ?? false));
     }, [user.id, user.username]);
 
-    const ContributedHyperLink = <Link href="https://github.com/MallCord/MallCord">contributed</Link>;
+    const ContributedHyperLink = <Link href="https://github.com/Equicord/Equicord">contributed</Link>;
 
     const hasLinks = website || githubName;
 

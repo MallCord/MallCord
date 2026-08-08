@@ -1,4 +1,4 @@
-# [<img src="https://iili.io/C3jZGrg.th.png" width="40" align="left" alt="MallCord">](https://github.com/MallCord/MallCord) MallCord
+# [<img src="https://iili.io/C3jZGrg.th.png" width="40" align="left" alt="MallCord">](https://github.com/Equicord/Equicord) MallCord
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-ff71ce?style=flat)](./LICENSE)
 [![Vaporwave](https://img.shields.io/badge/aesthetic-vaporwave-01cdfe?style=flat)](#)
@@ -6,12 +6,12 @@
 
 > aesthetic vibes for your client.
 
-**MallCord** is a vaporwave-inspired Discord client mod by **matthew (unfamiliardev)**. It is a rebrand and reskin of
+**MallCord** is a vaporwave-inspired Discord client mod by **overtonightdev**. It is a rebrand and reskin of
 [Equicord](https://github.com/Equicord/Equicord), which is itself an enhanced fork of
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
 > [!IMPORTANT]
-> **Sharp (unfamiliardev) has left the project.** MallCord will either be picked up by other contributors or archived until someone wants to take it over. If you're interested in maintaining it, reach out to Sharp on Discord: **oz5u**
+> **overtonightdev has left the project.** MallCord will either be picked up by other contributors or archived until someone wants to take it over. If you're interested in maintaining it, reach out to overtonightdev on Discord: **oz5u**
 
 ## Installing MallCord
 

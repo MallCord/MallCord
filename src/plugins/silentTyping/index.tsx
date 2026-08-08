@@ -288,17 +288,19 @@ function isImplicitlyAllowed(channel: string | Channel): number {
         return 1;
     }
 
+    const addedThreshold = !guildID
+        ? settings.store.temporaryEnableThresholdDirectMessages
+        : settings.store.temporaryEnableThresholdServers;
+
+    if (addedThreshold === 0) {
+        return 0;
+    }
+
     const lastMessage = MessageStore.getLastEditableMessage(resolvedChannel.id);
     const messageTimestamp = lastMessage?.timestamp?.getTime?.();
 
-    if (messageTimestamp) {
-        const addedThreshold = !guildID
-            ? settings.store.temporaryEnableThresholdDirectMessages
-            : settings.store.temporaryEnableThresholdServers;
-
-        if (Date.now() < messageTimestamp + (addedThreshold * 1000)) {
-            return 2;
-        }
+    if (messageTimestamp && Date.now() < messageTimestamp + (addedThreshold * 1000)) {
+        return 2;
     }
 
     return 0;
@@ -445,7 +447,7 @@ export default definePlugin({
                     replace: "const silentTypingShouldHideChatBarTypingIndicators=$self.shouldHideChatBarTypingIndicators();$1"
                 },
                 {
-                    match: /("stop-animation".{0,80}?ref:\i,children:)/,
+                    match: /("stop-animation".{0,100}?ref:\i,children:)/,
                     replace: "$1silentTypingShouldHideChatBarTypingIndicators?[]:"
                 }
             ]

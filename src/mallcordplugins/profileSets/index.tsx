@@ -9,11 +9,11 @@ import "./styles.css";
 import { definePluginSettings } from "@api/Settings";
 import { MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
+import { removeFromArray } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import { React } from "@webpack/common";
+import { SettingsRouter } from "@webpack/common";
 
-import { PresetManager } from "./components/presetManager";
-import { loadPresets, PresetSection } from "./utils/storage";
+import { loadPresets } from "./utils/storage";
 
 export const cl = classNameFactory("vc-profile-presets-");
 export const settings = definePluginSettings({
@@ -28,30 +28,27 @@ export const settings = definePluginSettings({
 
 export default definePlugin({
     name: "ProfileSets",
-    description: "Allows you to save and load different profile presets, via the Profile Section in Settings.",
+    description: "Allows you to save and load different profile presets.",
     tags: ["Appearance", "Customisation", "Utility"],
     authors: [MallCordDevs.omaw, MallCordDevs.justjxke],
     settings,
-    patches: [
-        {
-            find: "DefaultCustomizationSections: user cannot be undefined",
-            replacement: {
-                match: /return.{0,50}children:\[(?=.{0,50},\{placeholder:)/,
-                replace: "$&$self.renderPresetSection(\"main\"),"
-            }
+    toolboxActions: {
+        "Open Profile Sets": () => {
+            SettingsRouter.openUserSettings("equicord_profile_sets_panel");
         },
-        {
-            find: "USER_SETTINGS_GUILD_PROFILE)",
-            replacement: {
-                match: /guildId:(\i\.id),onChange:(\i)\}\)(?=.{0,25}profilePreviewTitle:)/,
-                replace: 'guildId:$1,onChange:$2}),$self.renderPresetSection("server",$1)'
-            }
-        }
-    ],
+    },
+
     start() {
         loadPresets("main");
+        SettingsPlugin.customEntries.push({
+            key: "equicord_profile_sets",
+            title: "Profile Sets",
+            Component: require("./components/profileSetsTab").default,
+            Icon: UserIcon
+        });
     },
-    renderPresetSection(section: PresetSection, guildId?: string) {
-        return <PresetManager section={section} guildId={guildId} />;
-    }
+
+    stop() {
+        removeFromArray(SettingsPlugin.customEntries, e => e.key === "equicord_profile_sets");
+    },
 });
