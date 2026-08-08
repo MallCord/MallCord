@@ -11,7 +11,7 @@
 [Vencord](https://github.com/Vendicated/Vencord) bundling 300+ community plugins.
 
 > [!IMPORTANT]
-> **overtonightdev has left the project.** MallCord will either be picked up by other contributors or archived until someone wants to take it over. If you're interested in maintaining it, reach out to overtonightdev on Discord: **oz5u**
+> **overtonightdev is back.** MallCord is alive and being actively developed again. Thanks for sticking around.
 
 ## Installing MallCord
 
