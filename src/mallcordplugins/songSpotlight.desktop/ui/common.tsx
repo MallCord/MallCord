@@ -6,7 +6,7 @@
 
 import { BaseText } from "@components/index";
 import { cl } from "@mallcordplugins/songSpotlight.desktop/lib/utils";
-import { classes } from "@utils/index";
+import { classes } from "@utils/misc";
 import { findByCodeLazy, findCssClassesLazy } from "@webpack";
 import { Tooltip } from "@webpack/common";
 import { ComponentType, HTMLAttributes, JSX } from "react";

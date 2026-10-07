@@ -45,6 +45,7 @@ export const GUILD_IDS = [GUILD_ID, VC_GUILD_ID];
 export const SUPPORT_CHANNEL_IDS = [SUPPORT_CHANNEL_ID, VC_SUPPORT_CHANNEL_ID];
 export const DONOR_ROLE_IDS = [DONOR_ROLE_ID, VC_DONOR_ROLE_ID];
 export const CONTRIB_ROLE_IDS = [CONTRIB_ROLE_ID, VENCORD_CONTRIB_ROLE_ID, VC_CONTRIB_ROLE_ID];
+export const KNOWN_ISSUES_CHANNEL_IDS = [KNOWN_ISSUES_CHANNEL_ID, VC_KNOWN_ISSUES_CHANNEL_ID];
 
 const platform = navigator.platform.toLowerCase();
 export const IS_WINDOWS = platform.startsWith("win");
@@ -555,7 +556,7 @@ export const Devs = /* #__PURE__*/ Object.freeze({
     },
     nyx: {
         name: "verticalsync.",
-        id: 1207087393929171095n
+        id: 1280505961546649633n
     },
     nekohaxx: {
         name: "nekohaxx",
@@ -608,6 +609,10 @@ export const Devs = /* #__PURE__*/ Object.freeze({
     RamziAH: {
         name: "RamziAH",
         id: 1279957227612147747n
+    },
+    ThaUnknown: {
+        name: "ThaUnknown_",
+        id: 252390917665718273n
     },
     SomeAspy: {
         name: "SomeAspy",
@@ -670,6 +675,10 @@ export const Devs = /* #__PURE__*/ Object.freeze({
         name: "Lunascape",
         id: 383365021415243776n
     },
+    paige: {
+        name: "paige",
+        id: 1375697625864601650n
+    },
     jax: {
         name: "jax",
         id: 1493703027801194598n
@@ -677,6 +686,22 @@ export const Devs = /* #__PURE__*/ Object.freeze({
     yuna0x0: {
         name: "yuna0x0",
         id: 213656926414831616n
+    },
+    scattagain: {
+        name: "Amelia",
+        id: 1098234477626544180n
+    },
+    Davri: {
+        name: "Davri",
+        id: 457579346282938368n
+    },
+    Kaede: {
+        name: "Kaede",
+        id: 1492642701320126504n
+    },
+    c0nnorgg: {
+        name: "c0nnorgg",
+        id: 1088882977985003620n,
     }
 } satisfies Record<string, Dev>);
 
@@ -710,8 +735,8 @@ export const MallCordDevs = Object.freeze({
         id: 353229259482857475n
     },
     nyx: {
-        name: "verticalsync",
-        id: 1207087393929171095n
+        name: "verticalsync.",
+        id: 1280505961546649633n
     },
     Cortex: {
         name: "Cortex",
@@ -780,6 +805,10 @@ export const MallCordDevs = Object.freeze({
     Balaclava: {
         name: "Balaclava",
         id: 854886148455399436n
+    },
+    tt: {
+        name: "_.tt",
+        id: 497966466617049089n
     },
     dat_insanity: {
         name: "dat_insanity",
@@ -1302,10 +1331,6 @@ export const MallCordDevs = Object.freeze({
         name: "korzi",
         id: 740966310875365416n
     },
-    davri: {
-        name: "Davri",
-        id: 457579346282938368n
-    },
     yash: {
         name: "yash",
         id: 889150838658977874n
@@ -1429,6 +1454,22 @@ export const MallCordDevs = Object.freeze({
     k304: {
         name: "k304",
         id: 255004979637649408n
+    },
+    ELJoOker: {
+        name: "ELJoOker",
+        id: 605894319408283678n
+    },
+    penguinwokrs: {
+        name: "penguinwokrs",
+        id: 385266832136863746n
+    },
+    Kurt: {
+        name: "Kurt",
+        id: 112222963276750848n
+    },
+    heart_menace: {
+        name: "heart_menace",
+        id: 281162701303185408n
     },
 } satisfies Record<string, Dev>);
 

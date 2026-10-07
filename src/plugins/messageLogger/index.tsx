@@ -15,6 +15,7 @@ import { isPluginEnabled } from "@api/PluginManager";
 import { definePluginSettings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { DeleteIcon, EyeIcon } from "@components/Icons";
 import { Devs, EQUIBOT_USER_ID, MallCordDevs, SUPPORT_CHANNEL_ID, VC_SUPPORT_CATEGORY_ID, VENBOT_USER_ID } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
@@ -75,7 +76,7 @@ function clearMessageHistory(msg: MLMessage) {
         FluxDispatcher.dispatch({
             type: "MESSAGE_DELETE",
             channelId: msg.channel_id,
-            messageId: msg.id,
+            id: msg.id,
             mlDeleted: true
         });
     } else {
@@ -120,6 +121,7 @@ const patchMessageContextMenu: NavContextMenuPatchCallback = (
                 id={TOGGLE_DELETE_STYLE_ID}
                 key={TOGGLE_DELETE_STYLE_ID}
                 label="Toggle Deleted Highlight"
+                leadingAccessory={{ type: "icon", icon: EyeIcon }}
                 action={() => domElement.classList.toggle("messagelogger-deleted")}
             />,
         );
@@ -161,6 +163,7 @@ const patchMessageContextMenu: NavContextMenuPatchCallback = (
             id={REMOVE_HISTORY_ID}
             key={REMOVE_HISTORY_ID}
             label={label}
+            leadingAccessory={{ type: "icon", icon: DeleteIcon }}
             color="danger"
             action={() => {
                 clearMessageHistory(message);
@@ -173,7 +176,7 @@ const patchChannelContextMenu: NavContextMenuPatchCallback = (
     children,
     { channel },
 ) => {
-    const messages = MessageStore.getMessages(channel?.id) as MLMessage[];
+    const messages = MessageStore.getMessages(channel?.id);
     if (!messages?.some(msg => doesMessageHaveHistory(msg))) return;
 
     const group = findGroupChildrenByChildId("mark-channel-read", children) ?? children;
@@ -368,6 +371,12 @@ export const settings = definePluginSettings({
         description: "Whether to log edited messages",
         default: true,
     },
+    logDeletedAttachments: {
+        type: OptionType.BOOLEAN,
+        description: "Whether to log deleted attachments",
+        default: true,
+        restartNeeded: true,
+    },
     inlineEdits: {
         type: OptionType.BOOLEAN,
         description: "Whether to display edit history as part of message content",
@@ -376,7 +385,7 @@ export const settings = definePluginSettings({
     ignoreBots: {
         type: OptionType.BOOLEAN,
         description: "Whether to ignore messages by bots",
-        default: false,
+        default: true,
     },
     ignoreSelf: {
         type: OptionType.BOOLEAN,
@@ -792,6 +801,7 @@ export default definePlugin({
                 // just mark deleted attachments as deleted on MESSAGE_UPDATE
                 {
                     match: /attachments:(\i)\.attachments\?\?\[\],/,
+                    predicate: () => settings.store.logDeletedAttachments,
                     replace: "attachments: $self.handleUpdateAttachments($1),"
                 }
             ]

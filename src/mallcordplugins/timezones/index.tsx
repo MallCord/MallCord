@@ -13,8 +13,9 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs, MallCordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { Message, User } from "@vencord/discord-types";
+import { ToastPosition } from "@vencord/discord-types/enums";
 import { findByPropsLazy, findCssClassesLazy } from "@webpack";
-import { Button, ChannelStore, Menu, openModal, showToast, Toasts, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
+import { Button, ChannelStore, Menu, openModal, showToast, Tooltip, useEffect, UserStore, useState } from "@webpack/common";
 
 import { deleteTimezone, getTimezone, loadDatabaseTimezones, setUserDatabaseTimezone } from "./database";
 import { SetTimezoneModal } from "./TimezoneModal";
@@ -127,7 +128,7 @@ export const settings = definePluginSettings({
                         await deleteTimezone();
                     } catch (error) {
                         console.error("Error resetting database timezone:", error);
-                        showToast("Failed to reset database timezone", Toasts.Type.FAILURE);
+                        showToast("Failed to reset database timezone", "failure");
                     }
                 }}
             >
@@ -280,6 +281,13 @@ export default definePlugin({
     patches: [
         // stolen from ViewIcons
         {
+            find: 'backgroundColor:"COMPLETE"===',
+            replacement: {
+                match: /bannerSrc:\i,(?=backgroundColor:"COMPLETE")/,
+                replace: "$&user:arguments[0].user,"
+            }
+        },
+        {
             find: '"--custom-cutout-radius":',
             replacement: {
                 match: /(?<=children:\[)\i.{0,100}className:\i\.\i\}\)/,
@@ -305,14 +313,14 @@ export default definePlugin({
                 const good = await loadDatabaseTimezones();
 
                 if (good) {
-                    showToast("Timezones refreshed successfully!", Toasts.Type.SUCCESS);
+                    showToast("Timezones refreshed successfully!", "success");
                 } else {
-                    showToast("Timezones Failed to refresh!", Toasts.Type.FAILURE);
+                    showToast("Timezones Failed to refresh!", "failure");
                 }
             }
             catch (error) {
                 console.error("Failed to refresh timezone:", error);
-                showToast("Failed to refresh timezones.", Toasts.Type.FAILURE);
+                showToast("Failed to refresh timezones.", "failure");
             }
         }
     },
@@ -326,7 +334,7 @@ export default definePlugin({
             if (!settings.store.askedTimezone) {
                 showToast(
                     "",
-                    Toasts.Type.MESSAGE,
+                    "message",
                     {
                         duration: 10000,
                         component: (
@@ -339,7 +347,7 @@ export default definePlugin({
                                 Want to save your timezone to the database? Click here to set it.
                             </Button>
                         ),
-                        position: Toasts.Position.BOTTOM
+                        position: ToastPosition.BOTTOM
                     }
                 );
                 settings.store.askedTimezone = true;
@@ -351,12 +359,9 @@ export default definePlugin({
     getTime,
 
     renderProfileTimezone: props => {
-        if (!settings.store.showProfileTime || !props?.bannerSrc) return null;
+        if (!settings.store.showProfileTime || !props?.user?.id) return null;
 
-        const match = /\/banners\/(\d+)\//.exec(props.bannerSrc);
-        const userId = match?.[1];
-        if (!userId) return null;
-
+        const userId = props.user.id;
         if (userId === UserStore.getCurrentUser().id && !settings.store.showOwnTimezone) return null;
 
         return <TimestampComponent userId={userId} type="profile" />;

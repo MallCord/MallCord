@@ -137,6 +137,12 @@ const settings = definePluginSettings({
         description: "Hide voice indicator in server list when only active channels are muted",
         restartNeeded: true,
         default: false,
+    },
+    noOnboarding: {
+        type: OptionType.BOOLEAN,
+        description: "Skips the server onboarding by gaslighting it",
+        restartNeeded: true,
+        default: false,
     }
 });
 
@@ -155,7 +161,8 @@ export default definePlugin({
         MallCordDevs.omaw,
         Devs.Samwich,
         Devs.AutumnVN,
-        EquicordDevs.auggeeo
+        MallCordDevs.auggeeo,
+        MallCordDevs.secp192k1
     ],
     required: true,
     settings,
@@ -307,7 +314,7 @@ export default definePlugin({
                 match: /case \i\.\i\.WINDOWS:/,
                 replace: 'case "WEB":'
             },
-            predicate: () => Settings.winNativeTitleBar,
+            predicate: () => Settings.nativeTitleBar,
         },
         {
             find: '"refresh-title-bar-small"',
@@ -321,7 +328,7 @@ export default definePlugin({
                     replace: "true"
                 }
             ],
-            predicate: () => Settings.winNativeTitleBar,
+            predicate: () => Settings.nativeTitleBar,
         },
         {
             find: "DirectMessage: getSpringConfigs()",
@@ -335,7 +342,7 @@ export default definePlugin({
                     replace: "$&&&!$self.isChannelMuted($1?.guildId,$1?.id)"
                 },
                 {
-                    match: /\.afkChannelId\?\[\].{0,50}.filter\((\i)=>\i\.type===\i\.\i\.VOICE/,
+                    match: /\.afkChannelId\).{0,80}.filter\((\i)=>\i\.type===\i\.\i\.VOICE/,
                     replace: "$&&&!$self.isChannelMuted($1?.guildId,$1?.channelId)"
                 },
                 {
@@ -343,11 +350,19 @@ export default definePlugin({
                     replace: "$&&&!$self.isChannelMuted($1?.guildId,$1?.channelId)"
                 },
                 {
-                    match: /\.getEmbeddedActivitiesForGuild\((\i)\)(?=.flatMap\(\i=>)/,
+                    match: /\.getEmbeddedActivitiesForGuild\((\i)\)(?=.{0,100}\.flatMap\(\i=>)/,
                     replace: "$&.filter(e=>!$self.isChannelMuted($1?.guildId,e?.channelId))"
                 }
             ],
             predicate: () => settings.store.hideVoiceIndicatorForMutedChannels,
+        },
+        {
+            find: 'type:"GUILD_ONBOARDING_PROMPTS_FETCH_START"',
+            replacement: {
+                match: /(?<="GUILD_ONBOARDING_PROMPTS_FETCH_SUCCESS",guildId:\i,\.\.\.\i)(?=\})/,
+                replace: ",enabled:!1"
+            },
+            predicate: () => settings.store.noOnboarding
         },
         // Add opening profile functionality to some connections
         {
@@ -359,6 +374,14 @@ export default definePlugin({
                 }
             ]
         },
+        // gif-picker context menu doesnt get full context so give it
+        {
+            find: "renderEmptyFavorite",
+            replacement: {
+                match: /(?<=handleContextMenu.{0,150})(?=link:(\i)\.url)/,
+                replace: "...$1,"
+            }
+        }
     ],
     renderMessageAccessory(props) {
         return (

@@ -49,6 +49,7 @@ const guildPopoutPatch: NavContextMenuPatchCallback = (children, { guild }: { gu
             label="View Reviews"
             id="vc-rdb-server-reviews"
             icon={OpenExternalIcon}
+            leadingAccessory={{ type: "icon", icon: OpenExternalIcon }}
             action={() => openReviewsModal(guild.id, guild.name, ReviewType.Server)}
         />
     );
@@ -61,6 +62,7 @@ const userContextPatch: NavContextMenuPatchCallback = (children, { user }: { use
             label="View Reviews"
             id="vc-rdb-user-reviews"
             icon={OpenExternalIcon}
+            leadingAccessory={{ type: "icon", icon: OpenExternalIcon }}
             action={() => openReviewsModal(user.id, user.username, ReviewType.User)}
         />
     );
@@ -147,7 +149,7 @@ export default definePlugin({
 
     renderProfileCollection: {
         priority: 0,
-        render: ({ user, isSideBar = false }: { user: User; isSideBar?: boolean; }) => {
+        render: ({ user, isSideBar = false, isRedesignEnabled = false }: { user: User; isSideBar?: boolean; isRedesignEnabled?: boolean; }) => {
             const [reviewData] = useAwaiter(() => getReviews(user.id, { limit: 4 }), { deps: [user.id], fallbackValue: null });
 
             // Discord are masters at using a crap ton of html elements and css classes to create a simple ui that could have
@@ -168,7 +170,6 @@ export default definePlugin({
                                                 {reviewData.reviews
                                                     .filter(review => review.id !== 0)
                                                     .slice(0, 4)
-                                                    .reverse()
                                                     .map((review, idx) => {
                                                         const showCount = idx === 3 && reviewData.reviewCount > 4;
 
@@ -201,7 +202,7 @@ export default definePlugin({
                 </section>
             );
 
-            return isSideBar
+            return isSideBar && !isRedesignEnabled
                 ? <div className={DMSideBarClasses.widgetPreviews}>{reviewsSection}</div>
                 : reviewsSection;
         },

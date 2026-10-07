@@ -7,7 +7,6 @@
 import "./VencordTab.css";
 
 import { openNotificationLogModal } from "@api/Notifications/notificationLog";
-import { plugins } from "@api/PluginManager";
 import { useSettings } from "@api/Settings";
 import { Button } from "@components/Button";
 import { Divider } from "@components/Divider";
@@ -20,6 +19,7 @@ import { openContributorModal, openPluginModal, SettingsTab, wrapTab } from "@co
 import { QuickAction, QuickActionCard } from "@components/settings/QuickAction";
 import { SpecialCard } from "@components/settings/SpecialCard";
 import BadgeAPI from "@plugins/_api/badges";
+import SettingsPlugin from "@plugins/_core/settings";
 import { gitRemote } from "@shared/vencordUserAgent";
 import { DONOR_ROLE_ID, GUILD_ID, IS_WINDOWS, VC_DONOR_ROLE_ID, VC_GUILD_ID } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
@@ -46,19 +46,13 @@ type KeysOfType<Object, Type> = {
 }[keyof Object];
 
 function Switches() {
-    const settings = useSettings(["useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
+    const settings = useSettings(["useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "nativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
 
     const Switches = [
         {
             key: "useQuickCss",
             title: "Enable Custom CSS",
-            description: "Load custom CSS from the QuickCSS editor. This allows you to customize Discord's appearance with your own styles.",
-        },
-        !IS_WEB && {
-            key: "enableReactDevtools",
-            title: "Enable React Developer Tools",
-            description: "Enable the React Developer Tools extension for debugging Discord's React components. Useful for plugin development.",
-            restartRequired: true,
+            description: "Apply your configured QuickCSS"
         },
         (!IS_WEB && !IS_DISCORD_DESKTOP || !IS_WINDOWS) && {
             key: "mainWindowFrameless",
@@ -74,7 +68,7 @@ function Switches() {
                 restartRequired: true,
             }
             : {
-                key: "winNativeTitleBar",
+                key: "nativeTitleBar",
                 title: "Use Windows' native title bar instead of Discord's custom one",
                 description: "Replace Discord's custom title bar with the standard Windows title bar. This may improve compatibility with some window management tools.",
                 restartRequired: true,
@@ -92,14 +86,20 @@ function Switches() {
         IS_DISCORD_DESKTOP && {
             key: "disableMinSize",
             title: "Disable Minimum Window Size",
-            description: "Allow the Discord window to be resized smaller than its default minimum size. Useful for tiling window managers or small screens.",
-            restartRequired: true,
+            description: "Allows you to resize the window to any size, even smaller than Discord's minimum size",
+            restartRequired: true
         },
         !IS_WEB && IS_WINDOWS && {
             key: "winCtrlQ",
             title: "Register Ctrl+Q as shortcut to close Discord",
             description: "Add Ctrl+Q as a keyboard shortcut to close Discord. This provides an alternative to Alt+F4 for quickly closing the application.",
             restartRequired: true,
+        },
+        !IS_WEB && {
+            key: "enableReactDevtools",
+            title: "Enable React Developer Tools",
+            description: "Mainly useful for plugin developers. Ignore this if you don't know what it is",
+            restartRequired: true
         },
     ] satisfies Array<false | {
         key: KeysOfType<typeof settings, boolean>;
@@ -133,6 +133,7 @@ function Switches() {
                     )
                 }
                 value={settings[key]}
+                hideBorder
                 onChange={v => {
                     settings[key] = v;
 
@@ -146,7 +147,6 @@ function Switches() {
                         });
                     }
                 }}
-                hideBorder
             />
         );
     });
@@ -248,7 +248,7 @@ function MallCordSettings() {
                 You can customize where this settings section appears in Discord's settings menu by configuring the{" "}
                 <a
                     role="button"
-                    onClick={() => openPluginModal(plugins.Settings)}
+                    onClick={() => openPluginModal(SettingsPlugin)}
                     style={{ cursor: "pointer", color: "var(--text-link)" }}
                 >
                     Settings Plugin

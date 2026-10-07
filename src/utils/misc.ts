@@ -16,10 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { loadLazyChunks } from "@debug/loadLazyChunks";
 import { User } from "@vencord/discord-types";
 import { ChannelStore, GuildMemberStore, IconUtils } from "@webpack/common";
 
-import { MALLCORD_HELPERS, MallCordDevsById, GUILD_ID, SUPPORT_CHANNEL_ID, VencordDevsById } from "./constants";
+import { GUILD_ID, KNOWN_ISSUES_CHANNEL_ID, KNOWN_ISSUES_CHANNEL_IDS, MALLCORD_HELPERS, MallCordDevsById, SUPPORT_CHANNEL_ID, SUPPORT_CHANNEL_IDS, VencordDevsById } from "./constants";
 
 /**
  * Calls .join(" ") on the arguments
@@ -114,9 +115,16 @@ export function isMallCordGuild(id: string | null | undefined, isGuildId: boolea
     return channel.guild_id === GUILD_ID;
 }
 
-export function isSupportChannel(channelId: string | null | undefined): boolean {
+export function isSupportChannel(channelId: string | null | undefined, includeVencord: boolean = false): boolean {
     if (!channelId) return false;
+    if (includeVencord) return SUPPORT_CHANNEL_IDS.includes(channelId);
     return channelId === SUPPORT_CHANNEL_ID;
+}
+
+export function isKnownIssuesCategory(channelId: string | null | undefined, includeVencord: boolean = false): boolean {
+    if (!channelId) return false;
+    if (includeVencord) return KNOWN_ISSUES_CHANNEL_IDS.includes(channelId);
+    return channelId === KNOWN_ISSUES_CHANNEL_ID;
 }
 
 export function isMallCordSupport(userId: string | null | undefined): boolean {
@@ -146,3 +154,8 @@ export function getUserAvatarUrl(user: User, guildId?: string, canAnimate?: bool
 
     return IconUtils.getUserAvatarURL(user, canAnimate, size) ?? IconUtils.getDefaultAvatarURL(user.id, user?.discriminator);
 }
+
+// this is all the way down here because i dont feel like dealing with conflicts
+export const pluralize = pluralise;
+
+export { loadLazyChunks };

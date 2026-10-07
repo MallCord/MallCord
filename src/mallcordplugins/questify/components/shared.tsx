@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import "../settings.css";
+
 import { Card } from "@components/Card";
 import { Heading } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
@@ -266,7 +268,7 @@ interface SettingsSwitchLayoutProps extends SwitchWithLabelProps {
     tooltip?: { position: "top" | "bottom", text: string; };
 }
 
-const SwitchWithLabel = findComponentByCodeLazy('auxiliaryContentPosition:"under-label"') as React.ComponentType<SwitchWithLabelProps>;
+const SwitchWithLabel = findComponentByCodeLazy("switchIconsEnabled:", ".hasIcon?") as React.ComponentType<SwitchWithLabelProps>;
 
 export type SettingsSubtleSwitchProps = Omit<SettingsSwitchLayoutProps, "description">;
 

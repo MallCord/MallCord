@@ -45,3 +45,9 @@ installer/sea-config.json
 CLAUDE.md
 AGENTS.md
 GEMINI.md
+
+# discord modules cache
+misc/bundle
+
+# intl scripts
+misc/scripts

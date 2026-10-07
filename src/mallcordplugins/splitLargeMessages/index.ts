@@ -7,9 +7,12 @@
 import type { MessageSendListener } from "@api/MessageEvents";
 import { definePluginSettings } from "@api/Settings";
 import { MallCordDevs } from "@utils/constants";
-import { getCurrentChannel, sendMessage } from "@utils/discord";
-import definePlugin, { OptionType } from "@utils/types";
-import { ChannelStore, ComponentDispatch, PermissionsBits, UserStore } from "@webpack/common";
+import { copyWithToast, getCurrentChannel, insertTextIntoChatInputBox, sendMessage } from "@utils/discord";
+import { Logger } from "@utils/Logger";
+import { sleep } from "@utils/misc";
+import definePlugin, { makeRange, OptionType } from "@utils/types";
+import type { Channel } from "@vencord/discord-types";
+import { ChannelStore, ComponentDispatch, PermissionsBits, PermissionStore, showToast,UserStore } from "@webpack/common";
 
 import { splitMessage, type SplitMode } from "./splitMessage";
 
@@ -117,11 +120,7 @@ const listener: MessageSendListener = async (channelId, message) => {
 
     const channel = ChannelStore.getChannel(channelId);
     if (!canSplitInChannel(channel)) {
-        Toasts.show({
-            message: "Cannot split this message because of the channel's slowmode.",
-            id: "vc-splitLargeMessages-blocked",
-            type: Toasts.Type.FAILURE,
-        });
+        showToast("Cannot split this message because of the channel's slowmode.", "failure");
         return { cancel: true };
     }
 
@@ -131,11 +130,7 @@ const listener: MessageSendListener = async (channelId, message) => {
     const sent = await sendChunks(channelId, chunks, getSendDelay(channel));
     if (sent !== chunks.length) {
         restoreUnsentContent(channelId, chunks, sent);
-        Toasts.show({
-            message: `Only ${sent}/${chunks.length} message parts were sent.`,
-            id: "vc-splitLargeMessages-failure",
-            type: Toasts.Type.FAILURE,
-        });
+        showToast(`Only ${sent}/${chunks.length} message parts were sent.`, "failure");
     }
 
     return { cancel: true };
