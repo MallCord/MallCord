@@ -12,7 +12,7 @@ import { Button } from "@components/Button";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Switch } from "@components/Switch";
 import { debounce } from "@shared/debounce";
-import { Devs, MallCordDevs, IS_MAC } from "@utils/constants";
+import { Devs, IS_MAC,MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 import type { Channel, ToastType, VoiceState } from "@vencord/discord-types";

@@ -6,6 +6,7 @@
 
 import "./styles.css";
 
+import { TranslateIcon } from "@plugins/translate/TranslateIcon";
 import { MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin from "@utils/types";

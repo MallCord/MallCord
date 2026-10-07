@@ -25,7 +25,7 @@ import AudioPlayer from "@mallcordplugins/songSpotlight.desktop/ui/components/Au
 import ProgressCircle from "@mallcordplugins/songSpotlight.desktop/ui/components/ProgressCircle";
 import ServiceIcon from "@mallcordplugins/songSpotlight.desktop/ui/components/ServiceIcon";
 import { openSettingsModal } from "@mallcordplugins/songSpotlight.desktop/ui/settings";
-import { RenderInfoEntryBased, RenderSongInfo } from "@song-spotlight/api/handlers";
+import { RenderInfoEntry, RenderInfoEntryBased, RenderSongInfo } from "@song-spotlight/api/handlers";
 import { Song as SongType } from "@song-spotlight/api/structs";
 import { isListLayout, sid } from "@song-spotlight/api/util";
 import { copyWithToast } from "@utils/discord";

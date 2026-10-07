@@ -7,6 +7,8 @@
 import "./styles.css";
 
 import { definePluginSettings } from "@api/Settings";
+import { UserIcon } from "@components/Icons";
+import SettingsPlugin from "@plugins/_core/settings";
 import { MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { removeFromArray } from "@utils/misc";
@@ -34,14 +36,14 @@ export default definePlugin({
     settings,
     toolboxActions: {
         "Open Profile Sets": () => {
-            SettingsRouter.openUserSettings("equicord_profile_sets_panel");
+            SettingsRouter.openUserSettings("mallcord_profile_sets_panel");
         },
     },
 
     start() {
         loadPresets("main");
         SettingsPlugin.customEntries.push({
-            key: "equicord_profile_sets",
+            key: "mallcord_profile_sets",
             title: "Profile Sets",
             Component: require("./components/profileSetsTab").default,
             Icon: UserIcon
@@ -49,6 +51,6 @@ export default definePlugin({
     },
 
     stop() {
-        removeFromArray(SettingsPlugin.customEntries, e => e.key === "equicord_profile_sets");
+        removeFromArray(SettingsPlugin.customEntries, e => e.key === "mallcord_profile_sets");
     },
 });

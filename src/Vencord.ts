@@ -100,7 +100,6 @@ async function init() {
     await onceReady;
     startAllPlugins(StartAt.WebpackReady);
 
-
     if (!IS_DEV && !IS_WEB && !IS_UPDATER_DISABLED) {
         runUpdateCheck();
 

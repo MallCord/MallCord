@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Devs } from "@utils/constants";
+import { MallCordDevs } from "@utils/constants";
 import definePlugin from "@utils/types";
 
 export default definePlugin({
     name: "SurfaceClassesAPI",
     description: "API to add plugin-owned semantic data attributes and limited props to stable Discord layout surfaces.",
-    authors: [Devs.benjii],
+    authors: [MallCordDevs.benjii],
 
     patches: [
         {

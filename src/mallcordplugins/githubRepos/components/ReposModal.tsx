@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { getLanguageColor } from "@mallcordplugins/githubRepos/colors";
-import { GitHubRepo } from "@mallcordplugins/githubRepos/types";
+import { RepoGroup, RepoSortMode } from "@mallcordplugins/githubRepos/types";
+import { PERSONAL_GROUP_KEY, sortGroups } from "@mallcordplugins/githubRepos/utils";
 import { RenderModalProps } from "@vencord/discord-types";
 import { Modal, React, useState } from "@webpack/common";
 

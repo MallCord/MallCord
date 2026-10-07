@@ -143,7 +143,6 @@ export default definePlugin({
     tags: ["Organisation", "Servers", "Appearance"],
     authors: [Devs.juby, Devs.AutumnVN, Devs.Nuckyz, MallCordDevs.justjxke],
     isModified: true,
-    tags: ["Organisation", "Servers", "Appearance"],
     settings,
 
     patches: [

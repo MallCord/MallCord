@@ -5,6 +5,8 @@
  */
 
 import { cl } from "@mallcordplugins/translatePlus/misc/types";
+import { classes } from "@utils/misc";
+import { IconComponent } from "@utils/types";
 
 export const Icon: IconComponent = ({ height = 20, width = 20, className }) => {
     return (

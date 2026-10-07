@@ -6,8 +6,9 @@
 
 import { Paragraph } from "@components/Paragraph";
 import { Span } from "@components/Span";
-import { fetchReposByUserId, fetchReposByUsername, fetchUserInfo, GitHubUserInfo } from "@mallcordplugins/githubRepos/githubApi";
-import { GitHubRepo } from "@mallcordplugins/githubRepos/types";
+import { fetchOrgRepos, fetchReposByUserId, fetchReposByUsername, fetchUserInfo, fetchUserOrgs, GitHubUserInfo } from "@mallcordplugins/githubRepos/githubApi";
+import { GitHubRepo, RepoGroup } from "@mallcordplugins/githubRepos/types";
+import { buildRepoGroups, getLanguageIconUrl, PERSONAL_GROUP_KEY } from "@mallcordplugins/githubRepos/utils";
 import { classes } from "@utils/misc";
 import { findCssClassesLazy } from "@webpack";
 import { Clickable, openModal, React, useEffect, UserProfileStore, useState } from "@webpack/common";

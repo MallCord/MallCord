@@ -8,11 +8,9 @@ import "./style.css";
 
 import { DataStore } from "@api/index";
 import { definePluginSettings } from "@api/Settings";
-import { Button, TextButton } from "@components/Button";
-import { Flex } from "@components/Flex";
-import { FormSwitch } from "@components/FormSwitch";
-import { Heading } from "@components/Heading";
-import { DeleteIcon } from "@components/Icons";
+import { Button } from "@components/Button";
+import ErrorBoundary from "@components/ErrorBoundary";
+import { DoubleCheckmarkIcon } from "@components/Icons";
 import { MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { classes } from "@utils/misc";

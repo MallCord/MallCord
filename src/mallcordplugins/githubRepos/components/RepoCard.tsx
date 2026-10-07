@@ -7,7 +7,8 @@
 import { BaseText } from "@components/BaseText";
 import { getLanguageColor } from "@mallcordplugins/githubRepos/colors";
 import { RepoCardProps } from "@mallcordplugins/githubRepos/types";
-import { React, Tooltip } from "@webpack/common";
+import { getLanguageIconUrl } from "@mallcordplugins/githubRepos/utils";
+import { React } from "@webpack/common";
 
 import { cl } from "..";
 import { Star } from "./Star";

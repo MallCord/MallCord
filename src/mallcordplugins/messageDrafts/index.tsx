@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { get as dsGet, set as dsSet, del as dsDel } from "@api/DataStore";
-import { addChatBarButton, removeChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
+import { addChatBarButton, ChatBarButtonFactory,removeChatBarButton } from "@api/ChatButtons";
+import { get as dsGet, set as dsSet } from "@api/DataStore";
 import { MallCordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
-import { closeModal, openModal, ModalContent, ModalHeader, ModalRoot } from "@utils/modal";
 import definePlugin from "@utils/types";
-import { FluxDispatcher, React, SelectedChannelStore, ChannelStore } from "@webpack/common";
+import { RenderModalProps } from "@vencord/discord-types";
+import { ChannelStore, closeModal, FluxDispatcher, Modal, openModal, React, SelectedChannelStore } from "@webpack/common";
 
 const log = new Logger("MessageDrafts");
 const DS_KEY = "MessageDrafts_v1";
@@ -47,7 +47,7 @@ function setInputValue(text: string) {
     patchedInput?.(text);
 }
 
-function DraftsModal({ modalKey, onClose }: { modalKey: string; onClose: () => void; }) {
+function DraftsModal({ modalProps, onClose }: { modalProps: RenderModalProps; onClose: () => void; }) {
     const [draftList, setDraftList] = React.useState<[string, { text: string; timestamp: number }][]>([]);
 
     React.useEffect(() => {
@@ -57,23 +57,14 @@ function DraftsModal({ modalKey, onClose }: { modalKey: string; onClose: () => v
 
     if (draftList.length === 0) {
         return (
-            <ModalRoot modalKey={modalKey}>
-                <ModalHeader>
-                    <span style={{ fontWeight: 600 }}>Saved Drafts</span>
-                </ModalHeader>
-                <ModalContent>
-                    <p style={{ color: "var(--text-muted)", padding: "16px 0" }}>No saved drafts.</p>
-                </ModalContent>
-            </ModalRoot>
+            <Modal {...modalProps} title="Saved Drafts">
+                <p style={{ color: "var(--text-muted)", padding: "16px 0" }}>No saved drafts.</p>
+            </Modal>
         );
     }
 
     return (
-        <ModalRoot modalKey={modalKey}>
-            <ModalHeader>
-                <span style={{ fontWeight: 600 }}>Saved Drafts</span>
-            </ModalHeader>
-            <ModalContent>
+        <Modal {...modalProps} title="Saved Drafts">
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 0 16px" }}>
                     {draftList.map(([channelId, draft]) => {
                         const channel = ChannelStore.getChannel(channelId);
@@ -120,8 +111,7 @@ function DraftsModal({ modalKey, onClose }: { modalKey: string; onClose: () => v
                         );
                     })}
                 </div>
-            </ModalContent>
-        </ModalRoot>
+        </Modal>
     );
 }
 
@@ -142,7 +132,7 @@ const DraftsButton: ChatBarButtonFactory = () => {
                 alignItems: "center",
             }}
             onClick={() => {
-                openModal(key => <DraftsModal modalKey={key} onClose={() => closeModal(key)} />);
+                const key = openModal(modalProps => <DraftsModal modalProps={modalProps} onClose={() => closeModal(key)} />);
             }}
         >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -163,7 +153,8 @@ export default definePlugin({
     description: "Saves your unsent messages per channel and restores them when you come back.",
     authors: [MallCordDevs.Sharp],
     dependencies: ["ChatInputButtonAPI", "MessageEventsAPI"],
-    tags: ["drafts", "messages", "productivity"],
+    tags: ["Chat", "Utility"],
+    searchTerms: ["drafts", "messages", "productivity"],
 
     patches: [
         {

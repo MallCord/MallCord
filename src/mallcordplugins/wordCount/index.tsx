@@ -54,7 +54,8 @@ export default definePlugin({
     name: "WordCount",
     description: "Shows a live word and character count while typing a message.",
     authors: [MallCordDevs.Sharp],
-    tags: ["chat", "productivity", "counter"],
+    tags: ["Chat", "Utility"],
+    searchTerms: ["productivity", "counter"],
     settings,
 
     patches: [
@@ -67,7 +68,7 @@ export default definePlugin({
             noWarn: true,
         },
         {
-            find: "\.TEXTAREA_KEYBOARD_SUBMIT_DISABLED",
+            find: ".TEXTAREA_KEYBOARD_SUBMIT_DISABLED",
             replacement: {
                 match: /(\(0,\i\.jsx\)\(\i\.default,\{[^}]{0,300}TEXTAREA_KEYBOARD_SUBMIT_DISABLED[^}]*\}\))/,
                 replace: "[$1,$self.Counter()]",

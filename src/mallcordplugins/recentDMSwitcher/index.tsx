@@ -8,7 +8,7 @@ import "./styles.css";
 
 import * as DataStore from "@api/DataStore";
 import { definePluginSettings } from "@api/Settings";
-import { MallCordDevs, IS_MAC } from "@utils/constants";
+import { IS_MAC,MallCordDevs } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { ToastPosition } from "@vencord/discord-types/enums";

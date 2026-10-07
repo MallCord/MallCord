@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { definePluginSettings } from "@api/Settings";
+import "./style.css";
+
 import { MallCordDevs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
-import { lodash, MediaEngineStore, Menu, useEffect, useMemo, useState } from "@webpack/common";
+import { classNameFactory } from "@utils/css";
+import definePlugin from "@utils/types";
+import { MediaEngineStore, Menu } from "@webpack/common";
 
 import { CustomRange } from "./CustomRange";
 import { MIN_FPS, MIN_RESOLUTION, settings } from "./settings";

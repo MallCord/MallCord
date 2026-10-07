@@ -5,9 +5,10 @@
  */
 
 import { BaseText } from "@components/BaseText";
-import { fetchReposByUserId, fetchReposByUsername, fetchUserInfo, GitHubUserInfo } from "@mallcordplugins/githubRepos/githubApi";
-import { GitHubRepo } from "@mallcordplugins/githubRepos/types";
-import { openModal,React, useEffect, UserProfileStore, useState } from "@webpack/common";
+import { fetchOrgRepos, fetchReposByUserId, fetchReposByUsername, fetchUserInfo, fetchUserOrgs } from "@mallcordplugins/githubRepos/githubApi";
+import { GitHubRepo, RepoGroup, RepoSortMode } from "@mallcordplugins/githubRepos/types";
+import { buildRepoGroups, PERSONAL_GROUP_KEY, sortGroups } from "@mallcordplugins/githubRepos/utils";
+import { React, useEffect, UserProfileStore, useState } from "@webpack/common";
 
 import { cl, settings } from "..";
 import { RepoCard } from "./RepoCard";

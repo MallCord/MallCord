@@ -54,7 +54,6 @@ async function onMessage({ message, channelId }: any) {
     if (!me) return;
     if (message.author.id === me.id) return;
 
-    const { ChannelTypes } = (await import("@webpack/common")).Constants ?? {};
     const isDM = !message.guild_id;
     if (!isDM) return;
 
@@ -84,7 +83,8 @@ export default definePlugin({
     name: "DMAway",
     description: "Automatically replies to DMs with a custom message when you've been idle.",
     authors: [MallCordDevs.Sharp],
-    tags: ["dms", "afk", "away", "productivity"],
+    tags: ["Chat", "Utility"],
+    searchTerms: ["dms", "afk", "away", "productivity"],
     settings,
 
     start() {
